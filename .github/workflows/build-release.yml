@@ -65,7 +65,9 @@ jobs:
         run: |
           # Manual version input has priority
           if [[ -n "${{ github.event.inputs.version }}" ]]; then
-            VERSION="${{ github.event.inputs.version }}"
+            INPUT_VERSION="${{ github.event.inputs.version }}"
+            # Remove leading 'v' if present
+            VERSION="${INPUT_VERSION#v}"
             echo "Using manual version: $VERSION"
 
           # Release event: Take tag from release
