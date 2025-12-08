@@ -109,16 +109,17 @@
   <!-- Sentry specific configuration: Only in Release mode -->
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <!-- https://docs.sentry.io/platforms/dotnet/configuration/msbuild/ -->
-    <!-- OrgSlug, ProjectSlug and AuthToken are required. 
+    <!-- OrgSlug, ProjectSlug and AuthToken are required.
     They can be set below, via argument to 'msbuild -p:' or environment variable -->
     <SentryOrg></SentryOrg>
     <SentryProject></SentryProject>
     <SentryUrl></SentryUrl> <!--  If empty, assumed to be sentry.io -->
     <SentryAuthToken></SentryAuthToken> <!-- Use env var instead: SENTRY_AUTH_TOKEN -->
 
-    <!-- Upload PDBs to Sentry, enabling stack traces with line numbers and file paths
+    <!-- Upload PDBs to Sentry only if AuthToken is configured, enabling stack traces with line numbers and file paths
       without the need to deploy the application with PDBs -->
-    <SentryUploadSymbols>true</SentryUploadSymbols>
+    <SentryUploadSymbols Condition="'$(SentryAuthToken)' != '' or '$(SENTRY_AUTH_TOKEN)' != ''">true</SentryUploadSymbols>
+    <SentryUploadSymbols Condition="'$(SentryAuthToken)' == '' and '$(SENTRY_AUTH_TOKEN)' == ''">false</SentryUploadSymbols>
 
     <!-- Source Link settings -->
     <!-- https://github.com/dotnet/sourcelink/blob/main/docs/README.md#publishrepositoryurl -->
@@ -134,7 +135,6 @@
     <PackageReference Include="NUnit" />
     <PackageReference Include="NUnit3TestAdapter" />
     <PackageReference Include="NunitXml.TestLogger" />
-    <PackageReference Include="coverlet.collector" />
   </ItemGroup>
 
   <!-- Set up stylecop -->

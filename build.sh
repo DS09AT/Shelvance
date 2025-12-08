@@ -31,7 +31,7 @@ UpdateVersionNumber()
 
 EnableExtraPlatformsInSDK()
 {
-    SDK_PATH=$(dotnet --list-sdks | grep -P '6\.\d\.\d+' | head -1 | sed 's/\(6\.[0-9]*\.[0-9]*\).*\[\(.*\)\]/\2\/\1/g')
+    SDK_PATH=$(dotnet --list-sdks | grep -P '8\.\d\.\d+' | head -1 | sed 's/\(8\.[0-9]*\.[0-9]*\).*\[\(.*\)\]/\2\/\1/g')
     BUNDLEDVERSIONS="${SDK_PATH}/Microsoft.NETCoreSdk.BundledVersions.props"
     if grep -q freebsd-x64 $BUNDLEDVERSIONS; then
         echo "Extra platforms already enabled"
@@ -138,7 +138,7 @@ PackageLinux()
 
     echo "Adding Readarr.Mono to UpdatePackage"
     cp $folder/Readarr.Mono.* $folder/Readarr.Update
-    if [ "$framework" = "net6.0" ]; then
+    if [ "$framework" = "net6.0" ] || [ "$framework" = "net8.0" ]; then
         cp $folder/Mono.Posix.NETStandard.* $folder/Readarr.Update
         cp $folder/libMonoPosixHelper.* $folder/Readarr.Update
     fi
@@ -166,7 +166,7 @@ PackageMacOS()
 
     echo "Adding Readarr.Mono to UpdatePackage"
     cp $folder/Readarr.Mono.* $folder/Readarr.Update
-    if [ "$framework" = "net6.0" ]; then
+    if [ "$framework" = "net6.0" ] || [ "$framework" = "net8.0" ]; then
         cp $folder/Mono.Posix.NETStandard.* $folder/Readarr.Update
         cp $folder/libMonoPosixHelper.* $folder/Readarr.Update
     fi
@@ -377,15 +377,15 @@ then
     Build
     if [[ -z "$RID" || -z "$FRAMEWORK" ]];
     then
-        PackageTests "net6.0" "win-x64"
-        PackageTests "net6.0" "win-x86"
-        PackageTests "net6.0" "linux-x64"
-        PackageTests "net6.0" "linux-musl-x64"
-        PackageTests "net6.0" "osx-x64"
+        PackageTests "net8.0" "win-x64"
+        PackageTests "net8.0" "win-x86"
+        PackageTests "net8.0" "linux-x64"
+        PackageTests "net8.0" "linux-musl-x64"
+        PackageTests "net8.0" "osx-x64"
         if [ "$ENABLE_EXTRA_PLATFORMS" = "YES" ];
         then
-            PackageTests "net6.0" "freebsd-x64"
-            PackageTests "net6.0" "linux-x86"
+            PackageTests "net8.0" "freebsd-x64"
+            PackageTests "net8.0" "linux-x86"
         fi
     else
         PackageTests "$FRAMEWORK" "$RID"
@@ -413,20 +413,20 @@ then
 
     if [[ -z "$RID" || -z "$FRAMEWORK" ]];
     then
-        Package "net6.0" "win-x64"
-        Package "net6.0" "win-x86"
-        Package "net6.0" "linux-x64"
-        Package "net6.0" "linux-musl-x64"
-        Package "net6.0" "linux-arm64"
-        Package "net6.0" "linux-musl-arm64"
-        Package "net6.0" "linux-arm"
-        Package "net6.0" "linux-musl-arm"
-        Package "net6.0" "osx-x64"
-        Package "net6.0" "osx-arm64"
+        Package "net8.0" "win-x64"
+        Package "net8.0" "win-x86"
+        Package "net8.0" "linux-x64"
+        Package "net8.0" "linux-musl-x64"
+        Package "net8.0" "linux-arm64"
+        Package "net8.0" "linux-musl-arm64"
+        Package "net8.0" "linux-arm"
+        Package "net8.0" "linux-musl-arm"
+        Package "net8.0" "osx-x64"
+        Package "net8.0" "osx-arm64"
         if [ "$ENABLE_EXTRA_PLATFORMS" = "YES" ];
         then
-            Package "net6.0" "freebsd-x64"
-            Package "net6.0" "linux-x86"
+            Package "net8.0" "freebsd-x64"
+            Package "net8.0" "linux-x86"
         fi
     else
         Package "$FRAMEWORK" "$RID"
@@ -436,7 +436,7 @@ fi
 if [ "$INSTALLER" = "YES" ];
 then
     InstallInno
-    BuildInstaller "net6.0" "win-x64"
-    BuildInstaller "net6.0" "win-x86"
+    BuildInstaller "net8.0" "win-x64"
+    BuildInstaller "net8.0" "win-x86"
     RemoveInno
 fi
