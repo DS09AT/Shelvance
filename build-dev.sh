@@ -116,8 +116,8 @@ BuildBackendFull()
     fi
     
     echo "  Copying platform-specific assemblies..."
-    cp "_output/$FRAMEWORK/Readarr.Windows.dll" "$devFolder/" 2>/dev/null || true
-    cp "_output/$FRAMEWORK/Readarr.Mono.dll" "$devFolder/" 2>/dev/null || true
+    cp "_output/$FRAMEWORK/$RID/Readarr.Windows.dll" "$devFolder/" 2>/dev/null || true
+    cp "_output/$FRAMEWORK/$RID/Readarr.Mono.dll" "$devFolder/" 2>/dev/null || true
     
     ProgressEnd "Backend build ($(date +%H:%M:%S))"
 }
@@ -169,8 +169,8 @@ PublishBackend()
     fi
     
     echo "  Copying platform-specific assemblies..."
-    cp "_output/$FRAMEWORK/Readarr.Windows.dll" "$devFolder/" 2>/dev/null || true
-    cp "_output/$FRAMEWORK/Readarr.Mono.dll" "$devFolder/" 2>/dev/null || true
+    cp "_output/$FRAMEWORK/$RID/Readarr.Windows.dll" "$devFolder/" 2>/dev/null || true
+    cp "_output/$FRAMEWORK/$RID/Readarr.Mono.dll" "$devFolder/" 2>/dev/null || true
     
     ProgressEnd "Backend published to $devFolder/"
 }

@@ -28,7 +28,7 @@ namespace NzbDrone.Common.Test.InstrumentationTests
         [SetUp]
         public void Setup()
         {
-            _subject = new SentryTarget("https://aaaaaaaaaaaaaaaaaaaaaaaaaa@sentry.io/111111", Mocker.GetMock<IAppFolderInfo>().Object);
+            _subject = new SentryTarget("https://00000000000000000000000000000000@sentry.example.com/0", Mocker.GetMock<IAppFolderInfo>().Object);
         }
 
         private LogEventInfo GivenLogEvent(LogLevel level, Exception ex, string message)
