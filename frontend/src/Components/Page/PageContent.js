@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import DocumentTitle from 'react-document-title';
+import { Helmet } from 'react-helmet-async';
 import ErrorBoundary from 'Components/Error/ErrorBoundary';
 import PageContentError from './PageContentError';
 import styles from './PageContent.css';
@@ -14,11 +14,12 @@ function PageContent(props) {
 
   return (
     <ErrorBoundary errorComponent={PageContentError}>
-      <DocumentTitle title={title ? `${title} - ${window.Readarr.instanceName}` : window.Readarr.instanceName}>
-        <div className={className}>
-          {children}
-        </div>
-      </DocumentTitle>
+      <Helmet>
+        <title>{title ? `${title} - ${window.Readarr.instanceName}` : window.Readarr.instanceName}</title>
+      </Helmet>
+      <div className={className}>
+        {children}
+      </div>
     </ErrorBoundary>
   );
 }

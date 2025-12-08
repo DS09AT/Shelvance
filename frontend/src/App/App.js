@@ -1,7 +1,7 @@
 import { ConnectedRouter } from 'connected-react-router';
 import PropTypes from 'prop-types';
 import React from 'react';
-import DocumentTitle from 'react-document-title';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { Provider } from 'react-redux';
 import PageConnector from 'Components/Page/PageConnector';
 import ApplyTheme from './ApplyTheme';
@@ -9,7 +9,10 @@ import AppRoutes from './AppRoutes';
 
 function App({ store, history }) {
   return (
-    <DocumentTitle title={window.Readarr.instanceName}>
+    <HelmetProvider>
+      <Helmet>
+        <title>{window.Readarr.instanceName}</title>
+      </Helmet>
       <Provider store={store}>
         <ConnectedRouter history={history}>
           <ApplyTheme>
@@ -19,7 +22,7 @@ function App({ store, history }) {
           </ApplyTheme>
         </ConnectedRouter>
       </Provider>
-    </DocumentTitle>
+    </HelmetProvider>
   );
 }
 
