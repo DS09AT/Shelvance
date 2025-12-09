@@ -200,9 +200,16 @@ namespace NzbDrone.Core.MediaFiles.BookImport.Identification
             List<Book> remoteBooks;
             var seenCandidates = new HashSet<string>();
 
+            _logger.Info("GetRemoteCandidates: Starting with idOverrides.Author={0}", idOverrides?.Author?.ForeignAuthorId ?? "null");
+
             var isbns = localEdition.LocalBooks.Select(x => x.FileTrackInfo.Isbn).Distinct().ToList();
             var asins = localEdition.LocalBooks.Select(x => x.FileTrackInfo.Asin).Distinct().ToList();
             var goodreads = localEdition.LocalBooks.Select(x => x.FileTrackInfo.GoodreadsId).Distinct().ToList();
+
+            _logger.Debug("GetRemoteCandidates: ISBNs={0}, ASINs={1}, GoodreadsIds={2}",
+                string.Join(",", isbns.Where(x => x.IsNotNullOrWhiteSpace())),
+                string.Join(",", asins.Where(x => x.IsNotNullOrWhiteSpace())),
+                string.Join(",", goodreads.Where(x => x.IsNotNullOrWhiteSpace())));
 
             // grab possibilities for all the IDs present
             if (isbns.Count == 1 && isbns[0].IsNotNullOrWhiteSpace())
@@ -271,11 +278,11 @@ namespace NzbDrone.Core.MediaFiles.BookImport.Identification
                 }
             }
 
-            // If we got an id result, or any overrides are set, stop
+            // If we got an id result, or edition/book overrides are set, stop
+            // But continue if only author override is set, as we still need to search by title
             if (seenCandidates.Any() ||
                 idOverrides?.Edition != null ||
-                idOverrides?.Book != null ||
-                idOverrides?.Author != null)
+                idOverrides?.Book != null)
             {
                 yield break;
             }
@@ -312,6 +319,7 @@ namespace NzbDrone.Core.MediaFiles.BookImport.Identification
                 try
                 {
                     remoteBooks = _bookSearchService.SearchForNewBook(bookTag, authorTag);
+                    _logger.Info("Author/Title search for '{0}' by '{1}' returned {2} books", bookTag, authorTag, remoteBooks.Count);
                 }
                 catch (GoodreadsException e)
                 {
@@ -370,27 +378,47 @@ namespace NzbDrone.Core.MediaFiles.BookImport.Identification
         private List<CandidateEdition> ToCandidates(IEnumerable<Book> books, HashSet<string> seenCandidates, IdentificationOverrides idOverrides)
         {
             var candidates = new List<CandidateEdition>();
+            var booksList = books.ToList();
 
-            foreach (var book in books)
+            _logger.Info("ToCandidates: Processing {0} books, idOverrides.Author={1}",
+                booksList.Count,
+                idOverrides?.Author?.ForeignAuthorId ?? "null");
+
+            foreach (var book in booksList)
             {
+                _logger.Info("Processing book: {0} (ForeignBookId={1})", book.Title, book.ForeignBookId);
+
                 // We have to make sure various bits and pieces are populated that are normally handled
                 // by a database lazy load
+                var editionCount = book.Editions?.Value?.Count ?? 0;
+                _logger.Info("Book has {0} editions", editionCount);
+
                 foreach (var edition in book.Editions.Value)
                 {
                     edition.Book = book;
 
-                    if (!seenCandidates.Contains(edition.ForeignEditionId) && SatisfiesOverride(edition, idOverrides))
+                    _logger.Info("Checking edition: {0} (ForeignEditionId={1})", edition.Title, edition.ForeignEditionId);
+
+                    if (!seenCandidates.Contains(edition.ForeignEditionId))
                     {
-                        seenCandidates.Add(edition.ForeignEditionId);
-                        candidates.Add(new CandidateEdition
+                        var satisfies = SatisfiesOverride(edition, idOverrides);
+                        _logger.Info("Edition {0} SatisfiesOverride: {1}", edition.ForeignEditionId, satisfies);
+
+                        if (satisfies)
                         {
-                            Edition = edition,
-                            ExistingFiles = new List<BookFile>()
-                        });
+                            seenCandidates.Add(edition.ForeignEditionId);
+                            candidates.Add(new CandidateEdition
+                            {
+                                Edition = edition,
+                                ExistingFiles = new List<BookFile>()
+                            });
+                            _logger.Info("Added edition {0} as candidate", edition.ForeignEditionId);
+                        }
                     }
                 }
             }
 
+            _logger.Info("ToCandidates: Returning {0} candidates", candidates.Count);
             return candidates;
         }
 
@@ -408,7 +436,33 @@ namespace NzbDrone.Core.MediaFiles.BookImport.Identification
 
             if (idOverride?.Author != null)
             {
-                return edition.Book.Value.Author.Value.ForeignAuthorId == idOverride.Author.ForeignAuthorId;
+                var book = edition.Book?.Value;
+                if (book == null)
+                {
+                    _logger.Info("Edition {0} has no Book set, cannot check author override", edition.ForeignEditionId);
+                    return false;
+                }
+
+                var author = book.Author?.Value;
+                if (author == null)
+                {
+                    _logger.Info("Book {0} for edition {1} has no Author set, cannot check author override", book.ForeignBookId, edition.ForeignEditionId);
+                    return false;
+                }
+
+                if (string.IsNullOrWhiteSpace(author.ForeignAuthorId))
+                {
+                    _logger.Info("Author for book {0} has no ForeignAuthorId, cannot check author override", book.ForeignBookId);
+                    return false;
+                }
+
+                var matches = author.ForeignAuthorId == idOverride.Author.ForeignAuthorId;
+                _logger.Info("Edition {0} author {1} {2} override author {3}",
+                    edition.ForeignEditionId,
+                    author.ForeignAuthorId,
+                    matches ? "matches" : "does not match",
+                    idOverride.Author.ForeignAuthorId);
+                return matches;
             }
 
             return true;

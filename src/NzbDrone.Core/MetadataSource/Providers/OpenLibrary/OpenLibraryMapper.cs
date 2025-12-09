@@ -94,7 +94,8 @@ namespace NzbDrone.Core.MetadataSource.Providers.OpenLibrary
             var author = new Author
             {
                 CleanName = Parser.Parser.CleanAuthorName(metadata.Name),
-                Books = books ?? new List<Book>()
+                Books = books ?? new List<Book>(),
+                Series = new List<Series>()
             };
 
             // Explicitly set Metadata as LazyLoaded to ensure it's properly initialized
@@ -278,6 +279,7 @@ namespace NzbDrone.Core.MetadataSource.Providers.OpenLibrary
             var edition = new Edition
             {
                 ForeignEditionId = doc.CoverEditionKey ?? doc.EditionKey?.FirstOrDefault() ?? "unknown",
+                TitleSlug = doc.GetWorkId(), // Use work ID as slug since we don't have edition-specific slug
                 Title = book.Title,
                 Images = new List<MediaCover.MediaCover>(),
                 Monitored = true
@@ -343,7 +345,8 @@ namespace NzbDrone.Core.MetadataSource.Providers.OpenLibrary
             var author = new Author
             {
                 CleanName = Parser.Parser.CleanAuthorName(metadata.Name),
-                Books = new List<Book>()
+                Books = new List<Book>(),
+                Series = new List<Series>()
             };
 
             // Explicitly set Metadata as LazyLoaded to ensure it's properly initialized

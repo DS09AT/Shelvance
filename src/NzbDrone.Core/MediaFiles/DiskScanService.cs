@@ -160,7 +160,22 @@ namespace NzbDrone.Core.MediaFiles
                 AddNewAuthors = addNewAuthors
             };
 
-            var decisions = _importDecisionMaker.GetImportDecisions(mediaFileList, null, null, config);
+            // If scanning a specific author's folder, set the author override
+            IdentificationOverrides idOverrides = null;
+            if (authorIds.Count == 1)
+            {
+                var author = _authorService.GetAuthor(authorIds[0]);
+                if (author != null)
+                {
+                    _logger.Info("DiskScanService: Setting author override to {0} ({1})", author.Name, author.ForeignAuthorId);
+                    idOverrides = new IdentificationOverrides
+                    {
+                        Author = author
+                    };
+                }
+            }
+
+            var decisions = _importDecisionMaker.GetImportDecisions(mediaFileList, idOverrides, null, config);
 
             decisionsStopwatch.Stop();
             _logger.Debug("Import decisions complete [{0}]", decisionsStopwatch.Elapsed);

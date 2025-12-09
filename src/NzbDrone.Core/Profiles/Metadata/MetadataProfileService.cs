@@ -112,7 +112,11 @@ namespace NzbDrone.Core.Profiles.Metadata
 
         public List<Book> FilterBooks(Author input, int profileId)
         {
-            var seriesLinks = input.Series.Value.SelectMany(x => x.LinkItems.Value)
+            var seriesList = input.Series?.Value ?? new List<Series>();
+            var seriesLinks = seriesList
+                .Where(x => x.LinkItems?.Value != null)
+                .SelectMany(x => x.LinkItems.Value)
+                .Where(x => x.Book?.Value != null)
                 .GroupBy(x => x.Book.Value)
                 .ToDictionary(x => x.Key, y => y.ToList());
 
@@ -139,7 +143,8 @@ namespace NzbDrone.Core.Profiles.Metadata
 
             var localFiles = _mediaFileService.GetFilesByAuthor(dbAuthor?.Id ?? 0);
 
-            return FilterBooks(input.Books.Value, localBooks, localFiles, seriesLinks, profileId);
+            var remoteBooks = input.Books?.Value ?? new List<Book>();
+            return FilterBooks(remoteBooks, localBooks, localFiles, seriesLinks, profileId);
         }
 
         private List<Book> FilterBooks(IEnumerable<Book> remoteBooks, List<Book> localBooks, List<BookFile> localFiles, Dictionary<Book, List<SeriesBookLink>> seriesLinks, int metadataProfileId)

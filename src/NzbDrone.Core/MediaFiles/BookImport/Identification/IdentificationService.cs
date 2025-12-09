@@ -144,7 +144,14 @@ namespace NzbDrone.Core.MediaFiles.BookImport.Identification
                 candidateReleases = _candidateService.GetRemoteCandidates(localBookRelease, idOverrides);
                 if (!config.AddNewAuthors)
                 {
-                    candidateReleases = candidateReleases.Where(x => x.Edition.Book.Value.Id > 0 && x.Edition.Book.Value.AuthorId > 0);
+                    if (idOverrides?.Author != null)
+                    {
+                        candidateReleases = candidateReleases.Where(x => x.Edition.Book.Value.Author.Value.ForeignAuthorId == idOverrides.Author.ForeignAuthorId);
+                    }
+                    else
+                    {
+                        candidateReleases = candidateReleases.Where(x => x.Edition.Book.Value.Id > 0 && x.Edition.Book.Value.AuthorId > 0);
+                    }
                 }
 
                 usedRemote = true;
@@ -156,8 +163,10 @@ namespace NzbDrone.Core.MediaFiles.BookImport.Identification
             {
                 // can't find any candidates even after using remote search
                 // populate the overrides and return
+                _logger.Warn("No matching candidates found for {0}. Book will not be imported.", localBookRelease);
                 foreach (var localTrack in localBookRelease.LocalBooks)
                 {
+                    _logger.Debug("File without match: {0}", localTrack.Path);
                     localTrack.Edition = idOverrides.Edition;
                     localTrack.Book = idOverrides.Book;
                     localTrack.Author = idOverrides.Author;
@@ -175,13 +184,37 @@ namespace NzbDrone.Core.MediaFiles.BookImport.Identification
 
                 if (!config.AddNewAuthors)
                 {
-                    candidateReleases = candidateReleases.Where(x => x.Edition.Book.Value.Id > 0);
+                    if (idOverrides?.Author != null)
+                    {
+                        candidateReleases = candidateReleases.Where(x => x.Edition.Book.Value.Author.Value.ForeignAuthorId == idOverrides.Author.ForeignAuthorId);
+                    }
+                    else if (idOverrides?.Book != null)
+                    {
+                        candidateReleases = candidateReleases.Where(x => x.Edition.Book.Value.ForeignBookId == idOverrides.Book.ForeignBookId);
+                    }
+                    else
+                    {
+                        candidateReleases = candidateReleases.Where(x => x.Edition.Book.Value.Id > 0);
+                    }
                 }
 
                 GetBestRelease(localBookRelease, candidateReleases, allLocalTracks, out _);
             }
 
             _logger.Debug($"Best release found in {watch.ElapsedMilliseconds}ms");
+
+            if (localBookRelease.Edition == null)
+            {
+                _logger.Warn("No edition matched for {0}. Distance threshold may not have been met.", localBookRelease);
+            }
+            else
+            {
+                _logger.Info("Matched {0} to edition '{1}' (Book: '{2}') with distance {3:P1}",
+                    localBookRelease,
+                    localBookRelease.Edition.Title,
+                    localBookRelease.Edition.Book?.Value?.Title ?? "Unknown",
+                    1 - localBookRelease.Distance.NormalizedDistance());
+            }
 
             localBookRelease.PopulateMatch(config.KeepAllEditions);
 

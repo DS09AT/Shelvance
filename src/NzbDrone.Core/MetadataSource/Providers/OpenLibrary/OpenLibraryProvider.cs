@@ -161,11 +161,16 @@ namespace NzbDrone.Core.MetadataSource.Providers.OpenLibrary
                         book.Author = new Author
                         {
                             Metadata = authorMetadata,
-                            CleanName = Parser.Parser.CleanAuthorName(authorMetadata.Name)
+                            CleanName = Parser.Parser.CleanAuthorName(authorMetadata.Name),
+                            Series = new List<Series>()
                         };
-                    }
 
-                    books.Add(book);
+                        books.Add(book);
+                    }
+                    else
+                    {
+                        _logger.Debug("Skipping book {0} - no author information", book.Title);
+                    }
                 }
             }
 
@@ -183,6 +188,7 @@ namespace NzbDrone.Core.MetadataSource.Providers.OpenLibrary
 
             if (searchResult?.Docs == null || !searchResult.Docs.Any())
             {
+                _logger.Debug("No results found for ISBN: {0}", isbn);
                 return new List<Book>();
             }
 
@@ -192,10 +198,32 @@ namespace NzbDrone.Core.MetadataSource.Providers.OpenLibrary
                 var book = OpenLibraryMapper.MapSearchResult(doc);
                 if (book != null)
                 {
+                    // Ensure Author is set from the search result
+                    if (doc.AuthorKey?.Any() == true && doc.AuthorName?.Any() == true)
+                    {
+                        var authorId = doc.AuthorKey.First().Replace("/authors/", "");
+                        var authorMetadata = new AuthorMetadata
+                        {
+                            ForeignAuthorId = authorId,
+                            TitleSlug = authorId,
+                            Name = doc.AuthorName.First(),
+                            Status = AuthorStatusType.Continuing
+                        };
+
+                        book.AuthorMetadata = authorMetadata;
+                        book.Author = new Author
+                        {
+                            Metadata = authorMetadata,
+                            CleanName = Parser.Parser.CleanAuthorName(authorMetadata.Name),
+                            Series = new List<Series>()
+                        };
+                    }
+
                     books.Add(book);
                 }
             }
 
+            _logger.Debug("Found {0} books for ISBN: {1}", books.Count, isbn);
             return books;
         }
 

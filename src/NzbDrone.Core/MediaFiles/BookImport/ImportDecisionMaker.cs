@@ -200,6 +200,8 @@ namespace NzbDrone.Core.MediaFiles.BookImport
 
             if (localEdition.Edition == null)
             {
+                var files = string.Join(", ", localEdition.LocalBooks.Select(x => System.IO.Path.GetFileName(x.Path)));
+                _logger.Warn("No matching edition found for files: {0}. Import rejected.", files);
                 decision = new ImportDecision<LocalEdition>(localEdition, new Rejection($"Couldn't find similar book for {localEdition}"));
             }
             else
@@ -216,11 +218,12 @@ namespace NzbDrone.Core.MediaFiles.BookImport
             }
             else if (decision.Rejections.Any())
             {
-                _logger.Debug("Book rejected for the following reasons: {0}", string.Join(", ", decision.Rejections));
+                var files = string.Join(", ", localEdition.LocalBooks.Select(x => System.IO.Path.GetFileName(x.Path)));
+                _logger.Warn("Book rejected for files [{0}]: {1}", files, string.Join("; ", decision.Rejections));
             }
             else
             {
-                _logger.Debug("Book accepted");
+                _logger.Debug("Book accepted: {0}", localEdition.Edition?.Title ?? localEdition.ToString());
             }
 
             return decision;

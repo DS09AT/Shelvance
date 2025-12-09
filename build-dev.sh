@@ -31,6 +31,52 @@ ProgressEnd()
     echo "Complete: $1"
 }
 
+# Run dotnet publish with automatic restore on NETSDK1064 error
+DotnetPublishWithRetry()
+{
+    local project="$1"
+    local output_dir="$2"
+    local temp_output
+
+    # First attempt without restore
+    temp_output=$(dotnet publish "$project" \
+        -c Debug \
+        -r $RID \
+        -f $FRAMEWORK \
+        -p:Platform=$platform \
+        -p:EnforceCodeStyleInBuild=false \
+        -p:TreatWarningsAsErrors=false \
+        --no-restore \
+        -o "$output_dir" \
+        -v minimal 2>&1) || {
+        # Check if it's a NETSDK1064 error (package not found)
+        if echo "$temp_output" | grep -q "NETSDK1064"; then
+            echo "  Package cache issue detected, running restore..."
+            dotnet restore src/Readarr.sln -v minimal
+
+            # Retry without --no-restore flag
+            dotnet publish "$project" \
+                -c Debug \
+                -r $RID \
+                -f $FRAMEWORK \
+                -p:Platform=$platform \
+                -p:EnforceCodeStyleInBuild=false \
+                -p:TreatWarningsAsErrors=false \
+                -o "$output_dir" \
+                -v minimal
+            return $?
+        else
+            # Different error, show output and fail
+            echo "$temp_output"
+            return 1
+        fi
+    }
+
+    # Success on first try, show output
+    echo "$temp_output"
+    return 0
+}
+
 ShowHelp()
 {
     cat << EOF
@@ -78,38 +124,20 @@ CheckIfFullBuildNeeded()
 BuildBackendFull()
 {
     ProgressStart "Building backend (full)"
-    
+
     mkdir -p "$devFolder"
-    
+
     echo "  [1/2] Building & publishing Readarr.Console..."
-    dotnet publish src/NzbDrone.Console/Readarr.Console.csproj \
-        -c Debug \
-        -r $RID \
-        -f $FRAMEWORK \
-        -p:Platform=$platform \
-        -p:EnforceCodeStyleInBuild=false \
-        -p:TreatWarningsAsErrors=false \
-        --no-restore \
-        -o "$devFolder" \
-        -v minimal
-    
+    DotnetPublishWithRetry src/NzbDrone.Console/Readarr.Console.csproj "$devFolder"
+
     if [ $? -ne 0 ]; then
         echo "Failed to build Readarr.Console"
         return 1
     fi
-    
+
     echo "  [2/2] Building & publishing Readarr.Update..."
-    dotnet publish src/NzbDrone.Update/Readarr.Update.csproj \
-        -c Debug \
-        -r $RID \
-        -f $FRAMEWORK \
-        -p:Platform=$platform \
-        -p:EnforceCodeStyleInBuild=false \
-        -p:TreatWarningsAsErrors=false \
-        --no-restore \
-        -o "$devFolder/Readarr.Update" \
-        -v minimal
-    
+    DotnetPublishWithRetry src/NzbDrone.Update/Readarr.Update.csproj "$devFolder/Readarr.Update"
+
     if [ $? -ne 0 ]; then
         echo "Failed to build Readarr.Update"
         return 1
@@ -130,39 +158,21 @@ BuildBackendIncremental()
 PublishBackend()
 {
     ProgressStart "Building & publishing backend (incremental)"
-    
+
     mkdir -p "$devFolder"
-    
+
     echo "  [1/2] Publishing Readarr.Console..."
-    dotnet publish src/NzbDrone.Console/Readarr.Console.csproj \
-        -c Debug \
-        -r $RID \
-        -f $FRAMEWORK \
-        -p:Platform=$platform \
-        -p:EnforceCodeStyleInBuild=false \
-        -p:TreatWarningsAsErrors=false \
-        --no-restore \
-        -o "$devFolder" \
-        -v minimal
-    
+    DotnetPublishWithRetry src/NzbDrone.Console/Readarr.Console.csproj "$devFolder"
+
     if [ $? -ne 0 ]; then
         echo "Failed to publish Readarr.Console"
         return 1
     fi
-    
+
     echo ""
     echo "  [2/2] Publishing Readarr.Update..."
-    dotnet publish src/NzbDrone.Update/Readarr.Update.csproj \
-        -c Debug \
-        -r $RID \
-        -f $FRAMEWORK \
-        -p:Platform=$platform \
-        -p:EnforceCodeStyleInBuild=false \
-        -p:TreatWarningsAsErrors=false \
-        --no-restore \
-        -o "$devFolder/Readarr.Update" \
-        -v minimal
-    
+    DotnetPublishWithRetry src/NzbDrone.Update/Readarr.Update.csproj "$devFolder/Readarr.Update"
+
     if [ $? -ne 0 ]; then
         echo "Failed to publish Readarr.Update"
         return 1
@@ -517,3 +527,4 @@ if [ "$os" = "windows" ]; then
 else
     echo "Start: ./$devFolder/Readarr"
 fi
+

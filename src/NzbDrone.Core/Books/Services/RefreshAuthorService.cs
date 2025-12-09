@@ -123,6 +123,11 @@ namespace NzbDrone.Core.Books
 
         protected override bool IsMerge(Author local, Author remote)
         {
+            if (remote.Metadata?.Value == null)
+            {
+                return false;
+            }
+
             _logger.Trace($"local: {local.AuthorMetadataId} remote: {remote.Metadata.Value.Id}");
             return local.AuthorMetadataId != remote.Metadata.Value.Id;
         }
@@ -131,14 +136,27 @@ namespace NzbDrone.Core.Books
         {
             var result = UpdateResult.None;
 
-            if (!local.Metadata.Value.Equals(remote.Metadata.Value))
+            if (local.Metadata?.Value != null && remote.Metadata?.Value != null && !local.Metadata.Value.Equals(remote.Metadata.Value))
             {
                 result = UpdateResult.UpdateTags;
             }
 
             local.UseMetadataFrom(remote);
-            local.Metadata = remote.Metadata;
-            local.Series = remote.Series.Value;
+
+            if (remote.Metadata != null)
+            {
+                local.Metadata = remote.Metadata;
+            }
+
+            if (remote.Series != null && remote.Series.Value != null)
+            {
+                local.Series = remote.Series.Value;
+            }
+            else if (local.Series == null)
+            {
+                local.Series = new List<Series>();
+            }
+
             local.LastInfoSync = DateTime.UtcNow;
 
             try
@@ -330,11 +348,23 @@ namespace NzbDrone.Core.Books
 
             if (shouldRescan)
             {
-                // some metadata has updated so rescan unmatched
-                // (but don't add new authors to reduce repeated searches against api)
-                var folders = _rootFolderService.All().Select(x => x.Path).ToList();
+                // Only scan the specific author folders, not all root folders
+                var authors = _authorService.GetAuthors(authorIds);
+                var folders = authors
+                    .Where(a => !string.IsNullOrEmpty(a.Path))
+                    .Select(a => a.Path)
+                    .Distinct()
+                    .ToList();
 
-                _commandQueueManager.Push(new RescanFoldersCommand(folders, FilterFilesType.Matched, false, authorIds));
+                if (folders.Any())
+                {
+                    _logger.Debug("Rescanning {0} author folder(s): {1}", folders.Count, string.Join(", ", folders));
+                    _commandQueueManager.Push(new RescanFoldersCommand(folders, FilterFilesType.Matched, false, authorIds));
+                }
+                else
+                {
+                    _logger.Debug("No author folders to rescan");
+                }
             }
         }
 
@@ -361,7 +391,16 @@ namespace NzbDrone.Core.Books
 
         public void Execute(BulkRefreshAuthorCommand message)
         {
-            RefreshSelectedAuthors(message.AuthorIds, message.AreNewAuthors, message.Trigger);
+            var authorIds = message.AuthorIds;
+
+            // If no specific author IDs provided, refresh all authors
+            if (authorIds == null || !authorIds.Any())
+            {
+                authorIds = _authorService.GetAllAuthors().Select(a => a.Id).ToList();
+                _logger.Debug("No specific authors requested, refreshing all {0} authors", authorIds.Count);
+            }
+
+            RefreshSelectedAuthors(authorIds, message.AreNewAuthors, message.Trigger);
         }
 
         public void Execute(RefreshAuthorCommand message)

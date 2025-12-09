@@ -193,7 +193,14 @@ namespace NzbDrone.Core.MediaCover
 
         public void EnsureBookCovers(Book book)
         {
-            foreach (var cover in book.Editions.Value.Single(x => x.Monitored).Images.Where(e => e.CoverType == MediaCoverTypes.Cover))
+            var monitoredEdition = book.Editions.Value.FirstOrDefault(x => x.Monitored);
+            if (monitoredEdition == null)
+            {
+                _logger.Debug("No monitored edition found for book {0}", book.Title);
+                return;
+            }
+
+            foreach (var cover in monitoredEdition.Images.Where(e => e.CoverType == MediaCoverTypes.Cover))
             {
                 if (cover.CoverType == MediaCoverTypes.Unknown)
                 {
