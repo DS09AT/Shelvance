@@ -144,8 +144,22 @@ BuildBackendFull()
     fi
     
     echo "  Copying platform-specific assemblies..."
-    cp "_output/$FRAMEWORK/$RID/Readarr.Windows.dll" "$devFolder/" 2>/dev/null || true
-    cp "_output/$FRAMEWORK/$RID/Readarr.Mono.dll" "$devFolder/" 2>/dev/null || true
+	
+    dotnet publish src/NzbDrone.Mono/Readarr.Mono.csproj \
+        -c Debug -r $RID -f $FRAMEWORK --no-restore \
+        -o "_output/temp-mono" -v minimal > /dev/null 2>&1 || true
+    cp "_output/temp-mono/Readarr.Mono.dll" "$devFolder/" 2>/dev/null || \
+        cp "_output/$FRAMEWORK/Readarr.Mono.dll" "$devFolder/" 2>/dev/null || true
+    cp "_output/temp-mono/Mono.Posix.NETStandard.dll" "$devFolder/" 2>/dev/null || true
+    cp "_output/temp-mono/libMonoPosixHelper.so" "$devFolder/" 2>/dev/null || true
+    rm -rf "_output/temp-mono" 2>/dev/null || true
+    
+    dotnet publish src/NzbDrone.Windows/Readarr.Windows.csproj \
+        -c Debug -r $RID -f $FRAMEWORK --no-restore \
+        -o "_output/temp-windows" -v minimal > /dev/null 2>&1 || true
+    cp "_output/temp-windows/Readarr.Windows.dll" "$devFolder/" 2>/dev/null || \
+        cp "_output/$FRAMEWORK/Readarr.Windows.dll" "$devFolder/" 2>/dev/null || true
+    rm -rf "_output/temp-windows" 2>/dev/null || true
     
     ProgressEnd "Backend build ($(date +%H:%M:%S))"
 }
@@ -179,8 +193,22 @@ PublishBackend()
     fi
     
     echo "  Copying platform-specific assemblies..."
-    cp "_output/$FRAMEWORK/$RID/Readarr.Windows.dll" "$devFolder/" 2>/dev/null || true
-    cp "_output/$FRAMEWORK/$RID/Readarr.Mono.dll" "$devFolder/" 2>/dev/null || true
+	
+    dotnet publish src/NzbDrone.Mono/Readarr.Mono.csproj \
+        -c Debug -r $RID -f $FRAMEWORK --no-restore \
+        -o "_output/temp-mono" -v minimal > /dev/null 2>&1 || true
+    cp "_output/temp-mono/Readarr.Mono.dll" "$devFolder/" 2>/dev/null || \
+        cp "_output/$FRAMEWORK/Readarr.Mono.dll" "$devFolder/" 2>/dev/null || true
+    cp "_output/temp-mono/Mono.Posix.NETStandard.dll" "$devFolder/" 2>/dev/null || true
+    cp "_output/temp-mono/libMonoPosixHelper.so" "$devFolder/" 2>/dev/null || true
+    rm -rf "_output/temp-mono" 2>/dev/null || true
+    
+    dotnet publish src/NzbDrone.Windows/Readarr.Windows.csproj \
+        -c Debug -r $RID -f $FRAMEWORK --no-restore \
+        -o "_output/temp-windows" -v minimal > /dev/null 2>&1 || true
+    cp "_output/temp-windows/Readarr.Windows.dll" "$devFolder/" 2>/dev/null || \
+        cp "_output/$FRAMEWORK/Readarr.Windows.dll" "$devFolder/" 2>/dev/null || true
+    rm -rf "_output/temp-windows" 2>/dev/null || true
     
     ProgressEnd "Backend published to $devFolder/"
 }
@@ -350,8 +378,22 @@ WatchMode()
                     if [ -n "$publish_line" ]; then
                         echo ""
                         echo "Published to: $devFolder/"
-                        cp "_output/$FRAMEWORK/Readarr.Windows.dll" "$devFolder/" 2>/dev/null || true
-                        cp "_output/$FRAMEWORK/Readarr.Mono.dll" "$devFolder/" 2>/dev/null || true
+						
+                        dotnet publish src/NzbDrone.Mono/Readarr.Mono.csproj \
+                            -c Debug -r $RID -f $FRAMEWORK --no-restore \
+                            -o "_output/temp-mono" -v minimal > /dev/null 2>&1 || true
+                        cp "_output/temp-mono/Readarr.Mono.dll" "$devFolder/" 2>/dev/null || \
+                            cp "_output/$FRAMEWORK/Readarr.Mono.dll" "$devFolder/" 2>/dev/null || true
+                        cp "_output/temp-mono/Mono.Posix.NETStandard.dll" "$devFolder/" 2>/dev/null || true
+                        cp "_output/temp-mono/libMonoPosixHelper.so" "$devFolder/" 2>/dev/null || true
+                        rm -rf "_output/temp-mono" 2>/dev/null || true
+                        
+                        dotnet publish src/NzbDrone.Windows/Readarr.Windows.csproj \
+                            -c Debug -r $RID -f $FRAMEWORK --no-restore \
+                            -o "_output/temp-windows" -v minimal > /dev/null 2>&1 || true
+                        cp "_output/temp-windows/Readarr.Windows.dll" "$devFolder/" 2>/dev/null || \
+                            cp "_output/$FRAMEWORK/Readarr.Windows.dll" "$devFolder/" 2>/dev/null || true
+                        rm -rf "_output/temp-windows" 2>/dev/null || true
                     fi
                     
                     if [ -n "$errors" ]; then
