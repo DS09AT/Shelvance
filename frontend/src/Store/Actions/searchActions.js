@@ -86,10 +86,12 @@ export const actionHandlers = handleThunks({
       abortCurrentRequest();
     }
 
+    const trimmedTerm = payload.term?.trim() || '';
+
     const { request, abortRequest } = createAjaxRequest({
       url: '/search',
       data: {
-        term: payload.term
+        term: trimmedTerm
       }
     });
 

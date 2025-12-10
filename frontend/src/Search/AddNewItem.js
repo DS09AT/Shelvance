@@ -61,12 +61,11 @@ class AddNewItem extends Component {
 
   onSearchInputChange = ({ value }) => {
     const trimmedValue = value.trim();
-    const hasValue = !!trimmedValue;
-    const shouldFetch = hasValue && trimmedValue.length >= 3;
+    const shouldFetch = trimmedValue.length >= 3;
 
     this.setState({ term: value, isFetching: shouldFetch }, () => {
-      if (hasValue) {
-        this.props.onSearchChange(value);
+      if (shouldFetch) {
+        this.props.onSearchChange(trimmedValue);
       } else {
         this.props.onClearSearch();
       }

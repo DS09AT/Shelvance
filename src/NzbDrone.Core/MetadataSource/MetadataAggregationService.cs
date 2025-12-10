@@ -168,7 +168,6 @@ namespace NzbDrone.Core.MetadataSource
                     {
                         _logger.Debug("{0} returned {1} result(s)", provider.Name, results.Count);
 
-                        // Deduplicate by ForeignAuthorId
                         foreach (var result in results)
                         {
                             if (!string.IsNullOrEmpty(result.ForeignAuthorId) && seenIds.Add(result.ForeignAuthorId))
@@ -184,8 +183,89 @@ namespace NzbDrone.Core.MetadataSource
                 }
             }
 
-            _logger.Info("Found {0} unique author(s) for query '{1}' across all providers", allResults.Count, query);
-            return allResults;
+            var sortedResults = SortAuthorsByRelevance(allResults, query);
+
+            _logger.Info("Found {0} unique author(s) for query '{1}' across all providers", sortedResults.Count, query);
+            return sortedResults;
+        }
+
+        private List<Author> SortAuthorsByRelevance(List<Author> authors, string query)
+        {
+            if (authors == null || !authors.Any())
+            {
+                return authors;
+            }
+
+            var queryLower = query?.ToLower() ?? string.Empty;
+
+            return authors
+                .Select(author =>
+                {
+                    var metadata = author.Metadata?.Value;
+                    if (metadata == null)
+                    {
+                        return new { Author = author, Score = 0.0 };
+                    }
+
+                    double score = 0;
+
+                    var nameLower = metadata.Name?.ToLower() ?? string.Empty;
+
+                    if (nameLower == queryLower)
+                    {
+                        score += 1000;
+                    }
+                    else if (nameLower.Contains(queryLower))
+                    {
+                        score += 500;
+                    }
+
+                    if (metadata.Aliases?.Any(alt => alt.Equals(query, StringComparison.OrdinalIgnoreCase)) == true)
+                    {
+                        score += 800;
+                    }
+                    else if (metadata.Aliases?.Any(alt => alt.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0) == true)
+                    {
+                        score += 300;
+                    }
+
+                    var bookCount = 0;
+                    if (author.Books?.Value != null)
+                    {
+                        bookCount = author.Books.Value.Count;
+                        score += Math.Min(bookCount, 500);
+                    }
+
+                    if (metadata.Born.HasValue)
+                    {
+                        score += 100;
+                    }
+
+                    if (metadata.Died.HasValue)
+                    {
+                        score += 50;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(metadata.Overview))
+                    {
+                        score += 75;
+                    }
+
+                    if (metadata.Images?.Any() == true)
+                    {
+                        score += Math.Min(metadata.Images.Count * 25, 75);
+                    }
+
+                    if (bookCount > 0 && bookCount < 5)
+                    {
+                        score -= 200;
+                    }
+
+                    return new { Author = author, Score = score };
+                })
+                .OrderByDescending(x => x.Score)
+                .Select(x => x.Author)
+                .ToList();
         }
 
         public List<Book> SearchForNewBook(string title, string author, bool getAllEditions = true)
@@ -403,19 +483,6 @@ namespace NzbDrone.Core.MetadataSource
                             {
                                 if (!string.IsNullOrEmpty(book.ForeignBookId) && seenBookIds.Add(book.ForeignBookId))
                                 {
-                                    // Add the book's author only if author search is also enabled
-                                    if (authorProviders.Any())
-                                    {
-                                        var author = book.Author?.Value;
-                                        if (author != null &&
-                                            !string.IsNullOrEmpty(author.ForeignAuthorId) &&
-                                            !string.IsNullOrEmpty(author.Metadata?.Value?.Name) &&
-                                            seenAuthorIds.Add(author.ForeignAuthorId))
-                                        {
-                                            result.Add(author);
-                                        }
-                                    }
-
                                     result.Add(book);
                                 }
                             }
@@ -435,7 +502,17 @@ namespace NzbDrone.Core.MetadataSource
                 seenAuthorIds.Count,
                 seenBookIds.Count);
 
-            return result;
+            var authorResults = result.Where(r => r is Author).Cast<Author>().ToList();
+            var bookResults = result.Where(r => r is Book).Cast<Book>().ToList();
+
+            var sortedAuthors = SortAuthorsByRelevance(authorResults, title);
+            var sortedBooks = bookResults.OrderBy(b => b.Title).ToList();
+
+            var sortedResults = new List<object>();
+            sortedResults.AddRange(sortedAuthors);
+            sortedResults.AddRange(sortedBooks);
+
+            return sortedResults;
         }
     }
 }

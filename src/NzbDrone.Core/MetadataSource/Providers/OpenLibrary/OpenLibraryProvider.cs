@@ -162,7 +162,7 @@ namespace NzbDrone.Core.MetadataSource.Providers.OpenLibrary
         {
             _logger.Debug("Searching for Author: {0}", query);
 
-            var searchUrl = $"{Settings.BaseUrl}/search/authors.json?q={Uri.EscapeDataString(query)}&limit=10";
+            var searchUrl = $"{Settings.BaseUrl}/search/authors.json?q={Uri.EscapeDataString(query)}&limit=20";
             var searchResult = await Task.Run(() => ExecuteRequest<OpenLibraryAuthorSearchResource>(searchUrl));
 
             if (searchResult?.Docs == null || !searchResult.Docs.Any())
@@ -170,10 +170,274 @@ namespace NzbDrone.Core.MetadataSource.Providers.OpenLibrary
                 return new List<Author>();
             }
 
-            return searchResult.Docs
+            var authors = searchResult.Docs
                 .Select(OpenLibraryMapper.MapAuthorSearchResult)
                 .Where(a => a != null)
                 .ToList();
+
+            // Calculate scores and filter out irrelevant results
+            var scoredAuthors = authors
+                .Select(a =>
+                {
+                    var doc = searchResult.Docs.FirstOrDefault(d => d.GetAuthorId() == a.Metadata.Value.ForeignAuthorId);
+                    var score = CalculateAuthorRelevanceScore(doc, query);
+                    var isRelevant = IsAuthorRelevantForQuery(doc, query);
+                    _logger.Debug("Author: {0} (ID: {1}), Score: {2}, Relevant: {3}", doc?.Name, a.Metadata.Value.ForeignAuthorId, score, isRelevant);
+                    return new { Author = a, Doc = doc, Score = score, IsRelevant = isRelevant };
+                })
+                .Where(x => x.IsRelevant)
+                .OrderByDescending(x => x.Score)
+                .Select(x => x.Author)
+                .Take(3)
+                .ToList();
+
+            _logger.Debug("Filtered {0} authors from {1} total for query: '{2}'", scoredAuthors.Count, authors.Count, query);
+            return scoredAuthors;
+        }
+
+        private double CalculateAuthorRelevanceScore(OpenLibraryAuthorSearchDocResource doc, string query)
+        {
+            if (doc == null)
+            {
+                return 0;
+            }
+
+            double score = 0;
+
+            var queryLower = query?.Trim().ToLower() ?? string.Empty;
+            var nameLower = doc.Name?.ToLower() ?? string.Empty;
+
+            var queryNormalized = NormalizeAuthorName(queryLower);
+            var nameNormalized = NormalizeAuthorName(nameLower);
+
+            // Split query into words for word matching
+            var queryWords = queryNormalized.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                .Where(w => w.Length > 1)
+                .ToList();
+            var nameWords = nameNormalized.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+            // Exact match (normalized)
+            if (nameNormalized == queryNormalized)
+            {
+                score += 1000;
+            }
+
+            // Close match (original, case-insensitive)
+            else if (nameLower == queryLower)
+            {
+                score += 950;
+            }
+
+            // Contains match
+            else if (nameNormalized.Contains(queryNormalized))
+            {
+                score += 500;
+            }
+            else if (nameLower.Contains(queryLower))
+            {
+                score += 450;
+            }
+
+            // Word matching: penalize if important query words are missing
+            else if (queryWords.Count > 0)
+            {
+                var matchedWords = queryWords.Count(qw => nameWords.Any(nw => nw.Contains(qw) || qw.Contains(nw)));
+                var matchRatio = (double)matchedWords / queryWords.Count;
+
+                // If less than half the important words match, heavily penalize
+                if (matchRatio < 0.5)
+                {
+                    score -= 500;
+                }
+
+                // If only some words match (but more than half), apply moderate penalty
+                else if (matchRatio < 1.0)
+                {
+                    score -= 200;
+                }
+            }
+
+            // Check alternate names
+            if (doc.AlternateNames?.Any() == true)
+            {
+                double bestAltScore = 0;
+                foreach (var altName in doc.AlternateNames)
+                {
+                    var altLower = altName?.ToLower() ?? string.Empty;
+                    var altNormalized = NormalizeAuthorName(altLower);
+                    var altWords = altNormalized.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    double altScore = 0;
+
+                    if (altNormalized == queryNormalized)
+                    {
+                        altScore = 900;
+                    }
+                    else if (altLower == queryLower)
+                    {
+                        altScore = 850;
+                    }
+                    else if (altNormalized.Contains(queryNormalized))
+                    {
+                        altScore = 400;
+                    }
+                    else if (altLower.Contains(queryLower))
+                    {
+                        altScore = 350;
+                    }
+
+                    // Word matching for alternate names
+                    else if (queryWords.Count > 0)
+                    {
+                        var matchedWords = queryWords.Count(qw => altWords.Any(aw => aw.Contains(qw) || qw.Contains(aw)));
+                        var matchRatio = (double)matchedWords / queryWords.Count;
+
+                        if (matchRatio < 0.5)
+                        {
+                            altScore = -300;
+                        }
+                        else if (matchRatio < 1.0)
+                        {
+                            altScore = -100;
+                        }
+                    }
+
+                    if (altScore > bestAltScore)
+                    {
+                        bestAltScore = altScore;
+                    }
+                }
+
+                score += bestAltScore;
+            }
+
+            if (doc.WorkCount.HasValue)
+            {
+                score += Math.Min(doc.WorkCount.Value, 500);
+            }
+
+            if (doc.RatingsAverage.HasValue && doc.RatingsCount.HasValue)
+            {
+                score += Math.Min(doc.RatingsCount.Value / 10.0, 200);
+
+                if (doc.RatingsAverage.Value >= 4.0)
+                {
+                    score += 100;
+                }
+                else if (doc.RatingsAverage.Value >= 3.5)
+                {
+                    score += 50;
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(doc.BirthDate))
+            {
+                score += 100;
+            }
+
+            if (!string.IsNullOrWhiteSpace(doc.DeathDate))
+            {
+                score += 50;
+            }
+
+            if (!string.IsNullOrWhiteSpace(doc.TopWork))
+            {
+                score += 75;
+            }
+
+            if (doc.TopSubjects?.Any() == true)
+            {
+                score += Math.Min(doc.TopSubjects.Count * 10, 50);
+            }
+
+            if (doc.WorkCount.HasValue && doc.WorkCount.Value < 5)
+            {
+                score -= 200;
+            }
+
+            return score;
+        }
+
+        private static string NormalizeAuthorName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return string.Empty;
+            }
+
+            // Remove dots, commas, and normalize spaces
+            return System.Text.RegularExpressions.Regex.Replace(
+                name.Replace(".", "").Replace(",", ""),
+                @"\s+",
+                " ").Trim();
+        }
+
+        private static bool IsAuthorRelevantForQuery(OpenLibraryAuthorSearchDocResource doc, string query)
+        {
+            if (doc == null || string.IsNullOrWhiteSpace(query))
+            {
+                return false;
+            }
+
+            var queryNormalized = NormalizeAuthorName(query.Trim().ToLower());
+            var nameNormalized = NormalizeAuthorName(doc.Name?.ToLower() ?? string.Empty);
+
+            // Split into individual words
+            var queryWords = queryNormalized.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var nameWords = nameNormalized.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+            if (queryWords.Length == 0)
+            {
+                return false;
+            }
+
+            // Count how many query words exist as standalone words in the author name
+            var matchedWords = queryWords.Count(qWord => nameWords.Contains(qWord));
+
+            // For single word queries: must be in name
+            if (queryWords.Length == 1)
+            {
+                return matchedWords >= 1;
+            }
+
+            // For 2-word queries: both words must match (100%)
+            if (queryWords.Length == 2)
+            {
+                return matchedWords == 2;
+            }
+
+            // For 3+ word queries: at least 75% of words must match
+            var matchPercentage = (double)matchedWords / queryWords.Length;
+            if (matchPercentage >= 0.75)
+            {
+                return true;
+            }
+
+            if (doc.AlternateNames?.Any() == true)
+            {
+                foreach (var altName in doc.AlternateNames)
+                {
+                    var altNormalized = NormalizeAuthorName(altName?.ToLower() ?? string.Empty);
+                    var altWords = altNormalized.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    matchedWords = queryWords.Count(qWord => altWords.Contains(qWord));
+
+                    if (queryWords.Length == 2 && matchedWords == 2)
+                    {
+                        return true;
+                    }
+
+                    if (queryWords.Length >= 3)
+                    {
+                        matchPercentage = (double)matchedWords / queryWords.Length;
+                        if (matchPercentage >= 0.75)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
         }
 
         protected override async Task<List<Book>> SearchForNewBookInternalAsync(string title, string author, bool getAllEditions)

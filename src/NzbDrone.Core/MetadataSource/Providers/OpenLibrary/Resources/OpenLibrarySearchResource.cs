@@ -111,6 +111,9 @@ namespace NzbDrone.Core.MetadataSource.Providers.OpenLibrary.Resources
         [JsonPropertyName("birth_date")]
         public string BirthDate { get; set; }
 
+        [JsonPropertyName("death_date")]
+        public string DeathDate { get; set; }
+
         [JsonPropertyName("top_work")]
         public string TopWork { get; set; }
 
@@ -119,6 +122,30 @@ namespace NzbDrone.Core.MetadataSource.Providers.OpenLibrary.Resources
 
         [JsonPropertyName("top_subjects")]
         public List<string> TopSubjects { get; set; }
+
+        [JsonPropertyName("ratings_average")]
+        public double? RatingsAverage { get; set; }
+
+        [JsonPropertyName("ratings_sortable")]
+        public double? RatingsSortable { get; set; }
+
+        [JsonPropertyName("ratings_count")]
+        public int? RatingsCount { get; set; }
+
+        [JsonPropertyName("ratings_count_1")]
+        public int? RatingsCount1 { get; set; }
+
+        [JsonPropertyName("ratings_count_2")]
+        public int? RatingsCount2 { get; set; }
+
+        [JsonPropertyName("ratings_count_3")]
+        public int? RatingsCount3 { get; set; }
+
+        [JsonPropertyName("ratings_count_4")]
+        public int? RatingsCount4 { get; set; }
+
+        [JsonPropertyName("ratings_count_5")]
+        public int? RatingsCount5 { get; set; }
 
         public string GetAuthorId()
         {

@@ -6,6 +6,28 @@
   color: inherit;
 }
 
+.authorBadge {
+  position: absolute;
+  top: -1px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--primaryColor);
+  color: var(--white);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: 0 0 4px 4px;
+  z-index: 1;
+}
+
+.authorBadgeText {
+  line-height: 1;
+}
+
 .underlay {
   @add-mixin cover;
 

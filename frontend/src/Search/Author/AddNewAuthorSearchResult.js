@@ -80,6 +80,10 @@ class AddNewAuthorSearchResult extends Component {
       ratings,
       folder,
       images,
+      born,
+      died,
+      genres,
+      topWork,
       isExistingAuthor,
       isSmallScreen
     } = this.props;
@@ -94,8 +98,24 @@ class AddNewAuthorSearchResult extends Component {
 
     const height = calculateHeight(230, isSmallScreen);
 
+    const bornYear = born ? new Date(born).getFullYear() : null;
+    const diedYear = died ? new Date(died).getFullYear() : null;
+    const lifespan = bornYear && diedYear ? `${bornYear} - ${diedYear}` : 
+                     bornYear ? `Born ${bornYear}` : 
+                     diedYear ? `Died ${diedYear}` : null;
+
+    const topGenres = genres && genres.length > 0 ? genres.slice(0, 3) : null;
+
     return (
       <div className={styles.searchResult}>
+        <div className={styles.authorBadge}>
+          <Icon
+            name={icons.INTERACTIVE}
+            size={16}
+          />
+          <span className={styles.authorBadgeText}>Author</span>
+        </div>
+        
         <Link
           className={styles.underlay}
           {...linkProps}
@@ -162,12 +182,47 @@ class AddNewAuthorSearchResult extends Component {
 
             <div>
               {
-                ratings.votes > 0 ?
+                topWork ?
+                  <Label
+                    kind={kinds.SUCCESS}
+                    size={sizes.LARGE}
+                    title="Top Work"
+                  >
+                    <Icon
+                      name={icons.BOOK}
+                      size={12}
+                    />
+                    {' '}
+                    {topWork}
+                  </Label> :
+                  null
+              }
+
+              {
+                lifespan ?
+                  <Label
+                    kind={kinds.INFO}
+                    size={sizes.LARGE}
+                  >
+                    <Icon
+                      name={icons.CALENDAR}
+                      size={12}
+                    />
+                    {' '}
+                    {lifespan}
+                  </Label> :
+                  null
+              }
+
+              {
+                ratings && ratings.votes > 0 ?
                   <Label size={sizes.LARGE}>
                     <HeartRating
                       rating={ratings.value}
                       iconSize={13}
                     />
+                    {' '}
+                    ({ratings.votes.toLocaleString()})
                   </Label> :
                   null
               }
@@ -181,6 +236,18 @@ class AddNewAuthorSearchResult extends Component {
                     {endedString}
                   </Label> :
                   null
+              }
+
+              {
+                topGenres && topGenres.map((genre, index) => (
+                  <Label
+                    key={index}
+                    kind={kinds.DEFAULT}
+                    size={sizes.MEDIUM}
+                  >
+                    {genre}
+                  </Label>
+                ))
               }
             </div>
 
@@ -226,6 +293,10 @@ AddNewAuthorSearchResult.propTypes = {
   ratings: PropTypes.object,
   folder: PropTypes.string,
   images: PropTypes.arrayOf(PropTypes.object),
+  born: PropTypes.string,
+  died: PropTypes.string,
+  genres: PropTypes.arrayOf(PropTypes.string),
+  topWork: PropTypes.string,
   isExistingAuthor: PropTypes.bool.isRequired,
   isSmallScreen: PropTypes.bool.isRequired
 };

@@ -55,6 +55,9 @@ namespace Readarr.Api.V1.Author
         public DateTime Added { get; set; }
         public AddAuthorOptions AddOptions { get; set; }
         public Ratings Ratings { get; set; }
+        public DateTime? Born { get; set; }
+        public DateTime? Died { get; set; }
+        public string TopWork { get; set; }
 
         public AuthorStatisticsResource Statistics { get; set; }
     }
@@ -67,6 +70,9 @@ namespace Readarr.Api.V1.Author
             {
                 return null;
             }
+
+            var overview = model.Metadata.Value.Overview;
+            var topWork = ExtractTopWork(ref overview);
 
             return new AuthorResource
             {
@@ -81,7 +87,7 @@ namespace Readarr.Api.V1.Author
                 SortNameLastFirst = model.Metadata.Value.SortNameLastFirst,
 
                 Status = model.Metadata.Value.Status,
-                Overview = model.Metadata.Value.Overview,
+                Overview = overview,
                 Disambiguation = model.Metadata.Value.Disambiguation,
 
                 Images = model.Metadata.Value.Images.JsonClone(),
@@ -105,9 +111,30 @@ namespace Readarr.Api.V1.Author
                 Added = model.Added,
                 AddOptions = model.AddOptions,
                 Ratings = model.Metadata.Value.Ratings,
+                Born = model.Metadata.Value.Born,
+                Died = model.Metadata.Value.Died,
+                TopWork = topWork,
 
                 Statistics = new AuthorStatisticsResource()
             };
+        }
+
+        private static string ExtractTopWork(ref string overview)
+        {
+            if (string.IsNullOrWhiteSpace(overview))
+            {
+                return null;
+            }
+
+            const string marker = "__TOPWORK__";
+            if (overview.StartsWith(marker))
+            {
+                var topWork = overview.Substring(marker.Length);
+                overview = null;
+                return topWork;
+            }
+
+            return null;
         }
 
         public static NzbDrone.Core.Books.Author ToModel(this AuthorResource resource)

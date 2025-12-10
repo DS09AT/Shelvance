@@ -325,6 +325,26 @@ namespace NzbDrone.Core.MetadataSource.Providers.OpenLibrary
                 metadata.Born = ParseOpenLibraryDate(doc.BirthDate);
             }
 
+            if (!string.IsNullOrWhiteSpace(doc.DeathDate))
+            {
+                metadata.Died = ParseOpenLibraryDate(doc.DeathDate);
+                metadata.Status = AuthorStatusType.Ended;
+            }
+
+            if (doc.RatingsAverage.HasValue && doc.RatingsCount.HasValue && doc.RatingsCount.Value > 0)
+            {
+                metadata.Ratings = new Ratings
+                {
+                    Value = (decimal)doc.RatingsAverage.Value,
+                    Votes = doc.RatingsCount.Value
+                };
+            }
+
+            if (doc.TopSubjects?.Any() == true)
+            {
+                metadata.Genres = doc.TopSubjects.Take(10).ToList();
+            }
+
             // Add author image using the olid-based URL format
             // The search API doesn't return photo IDs, but we can construct the URL
             // OpenLibrary will return a placeholder if no image exists for this author
@@ -351,6 +371,13 @@ namespace NzbDrone.Core.MetadataSource.Providers.OpenLibrary
 
             // Explicitly set Metadata as LazyLoaded to ensure it's properly initialized
             author.Metadata = new LazyLoaded<AuthorMetadata>(metadata);
+
+            // Store TopWork in Overview field temporarily (only for search results)
+            // This will be extracted in the API layer
+            if (!string.IsNullOrWhiteSpace(doc.TopWork))
+            {
+                metadata.Overview = $"__TOPWORK__{doc.TopWork}";
+            }
 
             return author;
         }

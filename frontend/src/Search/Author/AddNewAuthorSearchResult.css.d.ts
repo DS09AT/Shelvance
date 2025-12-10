@@ -2,6 +2,8 @@
 // Please do not change this file!
 interface CssExports {
   'alreadyExistsIcon': string;
+  'authorBadge': string;
+  'authorBadgeText': string;
   'content': string;
   'icons': string;
   'mbLink': string;
