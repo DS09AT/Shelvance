@@ -104,9 +104,7 @@ class Modal extends Component {
     const targetElement = this._findEventTarget(event);
 
     if (targetElement) {
-      const backgroundElement = ReactDOM.findDOMNode(this._backgroundRef);
-
-      return backgroundElement.isEqualNode(targetElement);
+      return this._backgroundRef?.isEqualNode(targetElement);
     }
 
     return false;

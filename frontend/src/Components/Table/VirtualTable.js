@@ -121,7 +121,8 @@ class VirtualTable extends Component {
       height: undefined,
       position: undefined,
       willChange: undefined,
-      overflow: undefined,
+      overflowX: undefined,
+      overflowY: undefined,
       width: undefined
     };
 

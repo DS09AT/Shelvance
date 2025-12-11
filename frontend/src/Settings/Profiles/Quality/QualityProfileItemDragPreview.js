@@ -2,14 +2,8 @@ import React from 'react';
 import { useDragLayer } from 'react-dnd';
 import DragPreviewLayer from 'Components/DragPreviewLayer';
 import { QUALITY_PROFILE_ITEM } from 'Helpers/dragTypes';
-import dimensions from 'Styles/Variables/dimensions.js';
 import QualityProfileItem from './QualityProfileItem';
 import styles from './QualityProfileItemDragPreview.css';
-
-const formGroupExtraSmallWidth = parseInt(dimensions.formGroupExtraSmallWidth);
-const formLabelSmallWidth = parseInt(dimensions.formLabelSmallWidth);
-const formLabelRightMarginWidth = parseInt(dimensions.formLabelRightMarginWidth);
-const dragHandleWidth = parseInt(dimensions.dragHandleWidth);
 
 function QualityProfileItemDragPreview() {
   const {
@@ -19,19 +13,15 @@ function QualityProfileItemDragPreview() {
   } = useDragLayer((monitor) => ({
     item: monitor.getItem(),
     itemType: monitor.getItemType(),
-    currentOffset: monitor.getSourceClientOffset()
+    currentOffset: monitor.getClientOffset()
   }));
 
   if (!currentOffset || itemType !== QUALITY_PROFILE_ITEM) {
     return null;
   }
 
-  // The offset is shifted because the drag handle is on the right edge of the
-  // list item and the preview is wider than the drag handle.
-
   const { x, y } = currentOffset;
-  const handleOffset = formGroupExtraSmallWidth - formLabelSmallWidth - formLabelRightMarginWidth - dragHandleWidth;
-  const transform = `translate3d(${x - handleOffset}px, ${y}px, 0)`;
+  const transform = `translate3d(${x}px, ${y}px, 0)`;
 
   const style = {
     position: 'absolute',

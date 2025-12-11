@@ -1,12 +1,5 @@
-import { createSelector } from 'reselect';
-
 function createCommandsSelector() {
-  return createSelector(
-    (state) => state.commands,
-    (commands) => {
-      return commands.items;
-    }
-  );
+  return (state) => state.commands.items;
 }
 
 export default createCommandsSelector;

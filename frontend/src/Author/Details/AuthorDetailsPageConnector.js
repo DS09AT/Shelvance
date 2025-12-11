@@ -1,9 +1,9 @@
-import { push } from 'connected-react-router';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
+import { withRouter } from 'Helpers/withRouter';
 import LoadingIndicator from 'Components/Loading/LoadingIndicator';
 import NotFound from 'Components/NotFound';
 import PageContent from 'Components/Page/PageContent';
@@ -15,10 +15,10 @@ import styles from './AuthorDetails.css';
 
 function createMapStateToProps() {
   return createSelector(
-    (state, { match }) => match,
+    (state, { params }) => params,
     (state) => state.authors,
-    (match, authors) => {
-      const titleSlug = match.params.titleSlug;
+    (params, authors) => {
+      const titleSlug = params.titleSlug;
       const {
         isFetching,
         isPopulated,
@@ -45,9 +45,8 @@ function createMapStateToProps() {
   );
 }
 
-const mapDispatchToProps = {
-  push
-};
+const mapDispatchToProps = {};
+
 
 class AuthorDetailsPageConnector extends Component {
 
@@ -56,7 +55,7 @@ class AuthorDetailsPageConnector extends Component {
 
   componentDidUpdate(prevProps) {
     if (!this.props.titleSlug) {
-      this.props.push(`${window.Readarr.urlBase}/`);
+      this.props.navigate('/');
       return;
     }
   }
@@ -111,8 +110,8 @@ AuthorDetailsPageConnector.propTypes = {
   isFetching: PropTypes.bool.isRequired,
   isPopulated: PropTypes.bool.isRequired,
   error: PropTypes.object,
-  match: PropTypes.shape({ params: PropTypes.shape({ titleSlug: PropTypes.string.isRequired }).isRequired }).isRequired,
-  push: PropTypes.func.isRequired
+  params: PropTypes.object.isRequired,
+  navigate: PropTypes.func.isRequired
 };
 
-export default connect(createMapStateToProps, mapDispatchToProps)(AuthorDetailsPageConnector);
+export default withRouter(connect(createMapStateToProps, mapDispatchToProps)(AuthorDetailsPageConnector));

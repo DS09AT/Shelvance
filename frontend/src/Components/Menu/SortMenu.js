@@ -8,7 +8,7 @@ function SortMenu(props) {
   const {
     className,
     children,
-    isDisabled,
+    isDisabled = false,
     ...otherProps
   } = props;
 
@@ -31,10 +31,6 @@ SortMenu.propTypes = {
   className: PropTypes.string,
   children: PropTypes.node.isRequired,
   isDisabled: PropTypes.bool.isRequired
-};
-
-SortMenu.defaultProps = {
-  isDisabled: false
 };
 
 export default SortMenu;

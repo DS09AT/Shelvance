@@ -6,7 +6,7 @@ import Icon from './Icon';
 function SpinnerIcon(props) {
   const {
     name,
-    spinningName,
+    spinningName = icons.SPINNER,
     isSpinning,
     ...otherProps
   } = props;
@@ -24,10 +24,6 @@ SpinnerIcon.propTypes = {
   name: PropTypes.object.isRequired,
   spinningName: PropTypes.object.isRequired,
   isSpinning: PropTypes.bool.isRequired
-};
-
-SpinnerIcon.defaultProps = {
-  spinningName: icons.SPINNER
 };
 
 export default SpinnerIcon;

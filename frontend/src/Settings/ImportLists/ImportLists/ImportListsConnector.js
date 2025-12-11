@@ -8,10 +8,7 @@ import sortByName from 'Utilities/Array/sortByName';
 import ImportLists from './ImportLists';
 
 function createMapStateToProps() {
-  return createSelector(
-    createSortedSectionSelector('settings.importLists', sortByName),
-    (importLists) => importLists
-  );
+  return createSortedSectionSelector('settings.importLists', sortByName);
 }
 
 const mapDispatchToProps = {

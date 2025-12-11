@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styles from './VirtualTableRow.css';
 
-function VirtualTableRow(props) {
+const VirtualTableRow = React.forwardRef(function VirtualTableRow(props, ref) {
   const {
-    className,
+    className = styles.row,
     children,
     style,
     ...otherProps
@@ -12,6 +12,7 @@ function VirtualTableRow(props) {
 
   return (
     <div
+      ref={ref}
       className={className}
       style={style}
       {...otherProps}
@@ -19,16 +20,12 @@ function VirtualTableRow(props) {
       {children}
     </div>
   );
-}
+});
 
 VirtualTableRow.propTypes = {
-  className: PropTypes.string.isRequired,
+  className: PropTypes.string,
   style: PropTypes.object.isRequired,
   children: PropTypes.node
-};
-
-VirtualTableRow.defaultProps = {
-  className: styles.row
 };
 
 export default VirtualTableRow;

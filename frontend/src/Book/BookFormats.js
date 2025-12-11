@@ -3,7 +3,7 @@ import React from 'react';
 import Label from 'Components/Label';
 import { kinds } from 'Helpers/Props';
 
-function BookFormats({ formats }) {
+function BookFormats({ formats = [] }) {
   return (
     <div>
       {
@@ -24,10 +24,6 @@ function BookFormats({ formats }) {
 
 BookFormats.propTypes = {
   formats: PropTypes.arrayOf(PropTypes.object).isRequired
-};
-
-BookFormats.defaultProps = {
-  formats: []
 };
 
 export default BookFormats;

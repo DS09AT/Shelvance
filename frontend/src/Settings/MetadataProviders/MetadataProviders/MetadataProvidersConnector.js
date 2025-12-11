@@ -8,12 +8,7 @@ import sortByName from 'Utilities/Array/sortByName';
 import MetadataProviders from './MetadataProviders';
 
 function createMapStateToProps() {
-  return createSelector(
-    createSortedSectionSelector('settings.metadataProviders', sortByName),
-    (metadataProviders) => {
-      return metadataProviders;
-    }
-  );
+  return createSortedSectionSelector('settings.metadataProviders', sortByName);
 }
 
 const mapDispatchToProps = {

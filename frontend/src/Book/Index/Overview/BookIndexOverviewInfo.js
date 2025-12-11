@@ -184,23 +184,23 @@ function BookIndexOverviewInfo(props) {
 
 BookIndexOverviewInfo.propTypes = {
   height: PropTypes.number.isRequired,
-  showMonitored: PropTypes.bool.isRequired,
-  showQualityProfile: PropTypes.bool.isRequired,
-  showAdded: PropTypes.bool.isRequired,
-  showReleaseDate: PropTypes.bool.isRequired,
-  showPath: PropTypes.bool.isRequired,
-  showSizeOnDisk: PropTypes.bool.isRequired,
-  monitored: PropTypes.bool.isRequired,
-  qualityProfile: PropTypes.object.isRequired,
-  author: PropTypes.object.isRequired,
+  showMonitored: PropTypes.bool,
+  showQualityProfile: PropTypes.bool,
+  showAdded: PropTypes.bool,
+  showReleaseDate: PropTypes.bool,
+  showPath: PropTypes.bool,
+  showSizeOnDisk: PropTypes.bool,
+  monitored: PropTypes.bool,
+  qualityProfile: PropTypes.object,
+  author: PropTypes.object,
   releaseDate: PropTypes.string,
   added: PropTypes.string,
   sizeOnDisk: PropTypes.number,
-  sortKey: PropTypes.string.isRequired,
-  showRelativeDates: PropTypes.bool.isRequired,
-  shortDateFormat: PropTypes.string.isRequired,
-  longDateFormat: PropTypes.string.isRequired,
-  timeFormat: PropTypes.string.isRequired
+  sortKey: PropTypes.string,
+  showRelativeDates: PropTypes.bool,
+  shortDateFormat: PropTypes.string,
+  longDateFormat: PropTypes.string,
+  timeFormat: PropTypes.string
 };
 
 export default BookIndexOverviewInfo;

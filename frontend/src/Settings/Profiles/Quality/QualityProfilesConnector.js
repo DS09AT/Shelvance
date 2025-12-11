@@ -8,10 +8,7 @@ import sortByName from 'Utilities/Array/sortByName';
 import QualityProfiles from './QualityProfiles';
 
 function createMapStateToProps() {
-  return createSelector(
-    createSortedSectionSelector('settings.qualityProfiles', sortByName),
-    (qualityProfiles) => qualityProfiles
-  );
+  return createSortedSectionSelector('settings.qualityProfiles', sortByName);
 }
 
 const mapDispatchToProps = {

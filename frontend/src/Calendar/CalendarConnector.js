@@ -13,12 +13,7 @@ import Calendar from './Calendar';
 const UPDATE_DELAY = 3600000; // 1 hour
 
 function createMapStateToProps() {
-  return createSelector(
-    (state) => state.calendar,
-    (calendar) => {
-      return calendar;
-    }
-  );
+  return (state) => state.calendar;
 }
 
 const mapDispatchToProps = {

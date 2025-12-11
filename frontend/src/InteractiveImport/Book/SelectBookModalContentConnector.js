@@ -13,12 +13,7 @@ import createClientSideCollectionSelector from 'Store/Selectors/createClientSide
 import SelectBookModalContent from './SelectBookModalContent';
 
 function createMapStateToProps() {
-  return createSelector(
-    createClientSideCollectionSelector('interactiveImport.books'),
-    (books) => {
-      return books;
-    }
-  );
+  return createClientSideCollectionSelector('interactiveImport.books');
 }
 
 const mapDispatchToProps = {

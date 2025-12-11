@@ -121,19 +121,19 @@ function getComponent(type) {
 
 function FormInputGroup(props) {
   const {
-    className,
-    containerClassName,
+    className = styles.inputGroup,
+    containerClassName = styles.inputGroupContainer,
     inputClassName,
-    type,
+    type = inputTypes.TEXT,
     unit,
-    buttons,
+    buttons = [],
     helpText,
-    helpTexts,
+    helpTexts = [],
     helpTextWarning,
     helpLink,
     pending,
-    errors,
-    warnings,
+    errors = [],
+    warnings = [],
     ...otherProps
   } = props;
 
@@ -271,8 +271,8 @@ function FormInputGroup(props) {
 }
 
 FormInputGroup.propTypes = {
-  className: PropTypes.string.isRequired,
-  containerClassName: PropTypes.string.isRequired,
+  className: PropTypes.string,
+  containerClassName: PropTypes.string,
   inputClassName: PropTypes.string,
   name: PropTypes.string.isRequired,
   value: PropTypes.any,
@@ -297,16 +297,6 @@ FormInputGroup.propTypes = {
   errors: PropTypes.arrayOf(PropTypes.object),
   warnings: PropTypes.arrayOf(PropTypes.object),
   onChange: PropTypes.func.isRequired
-};
-
-FormInputGroup.defaultProps = {
-  className: styles.inputGroup,
-  containerClassName: styles.inputGroupContainer,
-  type: inputTypes.TEXT,
-  buttons: [],
-  helpTexts: [],
-  errors: [],
-  warnings: []
 };
 
 export default FormInputGroup;

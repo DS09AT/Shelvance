@@ -1,8 +1,8 @@
-import { push } from 'connected-react-router';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
+import { withRouter } from 'Helpers/withRouter';
 import createDimensionsSelector from 'Store/Selectors/createDimensionsSelector';
 import SwipeHeader from './SwipeHeader';
 
@@ -20,7 +20,7 @@ function createMapStateToProps() {
 function createMapDispatchToProps(dispatch, props) {
   return {
     onGoTo(url) {
-      dispatch(push(`${window.Readarr.urlBase}${url}`));
+      props.navigate(url);
     }
   };
 }
@@ -43,4 +43,4 @@ SwipeHeaderConnector.propTypes = {
   onGoTo: PropTypes.func.isRequired
 };
 
-export default connect(createMapStateToProps, createMapDispatchToProps)(SwipeHeaderConnector);
+export default withRouter(connect(createMapStateToProps, createMapDispatchToProps)(SwipeHeaderConnector));

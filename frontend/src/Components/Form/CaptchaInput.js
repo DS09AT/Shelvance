@@ -10,9 +10,9 @@ import styles from './CaptchaInput.css';
 
 function CaptchaInput(props) {
   const {
-    className,
+    className = styles.input,
     name,
-    value,
+    value = '',
     hasError,
     hasWarning,
     refreshing,
@@ -74,11 +74,6 @@ CaptchaInput.propTypes = {
   onChange: PropTypes.func.isRequired,
   onRefreshPress: PropTypes.func.isRequired,
   onCaptchaChange: PropTypes.func.isRequired
-};
-
-CaptchaInput.defaultProps = {
-  className: styles.input,
-  value: ''
 };
 
 export default CaptchaInput;

@@ -7,12 +7,7 @@ import createAuthorSelector from 'Store/Selectors/createAuthorSelector';
 import DeleteAuthorModalContent from './DeleteAuthorModalContent';
 
 function createMapStateToProps() {
-  return createSelector(
-    createAuthorSelector(),
-    (author) => {
-      return author;
-    }
-  );
+  return createAuthorSelector();
 }
 
 const mapDispatchToProps = {

@@ -38,8 +38,8 @@ function QueueStatusCell(props) {
   const {
     sourceTitle,
     status,
-    trackedDownloadStatus,
-    trackedDownloadState,
+    trackedDownloadStatus = 'Ok',
+    trackedDownloadState = 'Downloading',
     statusMessages,
     errorMessage
   } = props;
@@ -146,11 +146,6 @@ QueueStatusCell.propTypes = {
   trackedDownloadState: PropTypes.string.isRequired,
   statusMessages: PropTypes.arrayOf(PropTypes.object),
   errorMessage: PropTypes.string
-};
-
-QueueStatusCell.defaultProps = {
-  trackedDownloadStatus: 'Ok',
-  trackedDownloadState: 'Downloading'
 };
 
 export default QueueStatusCell;

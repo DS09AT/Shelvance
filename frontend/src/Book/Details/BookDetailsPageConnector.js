@@ -1,9 +1,9 @@
-import { push } from 'connected-react-router';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
+import { withRouter } from 'Helpers/withRouter';
 import LoadingIndicator from 'Components/Loading/LoadingIndicator';
 import NotFound from 'Components/NotFound';
 import PageContent from 'Components/Page/PageContent';
@@ -13,11 +13,11 @@ import BookDetailsConnector from './BookDetailsConnector';
 
 function createMapStateToProps() {
   return createSelector(
-    (state, { match }) => match,
+    (state, { params }) => params,
     (state) => state.books,
     (state) => state.authors,
-    (match, books, author) => {
-      const titleSlug = match.params.titleSlug;
+    (params, books, author) => {
+      const titleSlug = params.titleSlug;
       const isFetching = books.isFetching || author.isFetching;
       const isPopulated = books.isPopulated && author.isPopulated;
 
@@ -42,29 +42,9 @@ function createMapStateToProps() {
   );
 }
 
-const mapDispatchToProps = {
-  push
-};
+const mapDispatchToProps = {};
 
 class BookDetailsPageConnector extends Component {
-
-  constructor(props) {
-    super(props);
-    this.state = { hasMounted: false };
-  }
-  //
-  // Lifecycle
-
-  componentDidMount() {
-    this.populate();
-  }
-
-  //
-  // Control
-
-  populate = () => {
-    this.setState({ hasMounted: true });
-  };
 
   //
   // Render
@@ -84,8 +64,7 @@ class BookDetailsPageConnector extends Component {
       );
     }
 
-    if ((isFetching || !this.state.hasMounted) ||
-        (!isFetching && !isPopulated)) {
+    if (isFetching || !isPopulated) {
       return (
         <PageContent title={translate('Loading')}>
           <PageContentBody>
@@ -95,22 +74,19 @@ class BookDetailsPageConnector extends Component {
       );
     }
 
-    if (!isFetching && isPopulated && this.state.hasMounted) {
-      return (
-        <BookDetailsConnector
-          titleSlug={titleSlug}
-        />
-      );
-    }
+    return (
+      <BookDetailsConnector
+        titleSlug={titleSlug}
+      />
+    );
   }
 }
 
 BookDetailsPageConnector.propTypes = {
   titleSlug: PropTypes.string,
-  match: PropTypes.shape({ params: PropTypes.shape({ titleSlug: PropTypes.string.isRequired }).isRequired }).isRequired,
-  push: PropTypes.func.isRequired,
+  params: PropTypes.object.isRequired,
   isFetching: PropTypes.bool.isRequired,
   isPopulated: PropTypes.bool.isRequired
 };
 
-export default connect(createMapStateToProps, mapDispatchToProps)(BookDetailsPageConnector);
+export default withRouter(connect(createMapStateToProps, mapDispatchToProps)(BookDetailsPageConnector));

@@ -1,17 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { createSelector } from 'reselect';
 import { getCaptchaCookie, refreshCaptcha, resetCaptcha } from 'Store/Actions/captchaActions';
 import CaptchaInput from './CaptchaInput';
 
 function createMapStateToProps() {
-  return createSelector(
-    (state) => state.captcha,
-    (captcha) => {
-      return captcha;
-    }
-  );
+  return (state) => state.captcha;
 }
 
 const mapDispatchToProps = {

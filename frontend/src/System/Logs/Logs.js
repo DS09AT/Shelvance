@@ -1,30 +1,16 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Route } from 'react-router-dom';
 import Switch from 'Components/Router/Switch';
 import LogFilesConnector from './Files/LogFilesConnector';
 import UpdateLogFilesConnector from './Updates/UpdateLogFilesConnector';
 
-class Logs extends Component {
-
-  //
-  // Render
-
-  render() {
-    return (
-      <Switch>
-        <Route
-          exact={true}
-          path="/system/logs/files"
-          component={LogFilesConnector}
-        />
-
-        <Route
-          path="/system/logs/files/update"
-          component={UpdateLogFilesConnector}
-        />
-      </Switch>
-    );
-  }
+function Logs() {
+  return (
+    <Switch>
+      <Route index element={<LogFilesConnector />} />
+      <Route path="update" element={<UpdateLogFilesConnector />} />
+    </Switch>
+  );
 }
 
 export default Logs;

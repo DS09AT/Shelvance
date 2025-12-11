@@ -67,6 +67,11 @@ function QualityProfileItemDragSource(props) {
       // we don't bounce between above and below causing rapid setState calls.
       const childNodeIndex = monitor.isOver({ shallow: true }) && isDraggingUp ? 1 : 0;
       const componentDOMNode = ref.current.children[childNodeIndex];
+      
+      if (!componentDOMNode) {
+        return;
+      }
+      
       const hoverBoundingRect = componentDOMNode.getBoundingClientRect();
       const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
       const clientOffset = monitor.getClientOffset();

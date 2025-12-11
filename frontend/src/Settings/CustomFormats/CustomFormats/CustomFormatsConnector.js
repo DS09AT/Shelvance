@@ -8,10 +8,7 @@ import sortByName from 'Utilities/Array/sortByName';
 import CustomFormats from './CustomFormats';
 
 function createMapStateToProps() {
-  return createSelector(
-    createSortedSectionSelector('settings.customFormats', sortByName),
-    (customFormats) => customFormats
-  );
+  return createSortedSectionSelector('settings.customFormats', sortByName);
 }
 
 const mapDispatchToProps = {

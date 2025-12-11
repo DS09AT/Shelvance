@@ -12,6 +12,7 @@ import { kinds } from 'Helpers/Props';
 function PendingChangesModal(props) {
   const {
     isOpen,
+    kind = kinds.PRIMARY,
     onConfirm,
     onCancel,
     bindShortcut,
@@ -67,10 +68,6 @@ PendingChangesModal.propTypes = {
   onCancel: PropTypes.func.isRequired,
   bindShortcut: PropTypes.func.isRequired,
   unbindShortcut: PropTypes.func.isRequired
-};
-
-PendingChangesModal.defaultProps = {
-  kind: kinds.PRIMARY
 };
 
 export default keyboardShortcuts(PendingChangesModal);

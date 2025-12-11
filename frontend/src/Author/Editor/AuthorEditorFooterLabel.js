@@ -6,7 +6,7 @@ import styles from './AuthorEditorFooterLabel.css';
 
 function AuthorEditorFooterLabel(props) {
   const {
-    className,
+    className = styles.label,
     label,
     isSaving
   } = props;
@@ -31,10 +31,6 @@ AuthorEditorFooterLabel.propTypes = {
   className: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   isSaving: PropTypes.bool.isRequired
-};
-
-AuthorEditorFooterLabel.defaultProps = {
-  className: styles.label
 };
 
 export default AuthorEditorFooterLabel;
