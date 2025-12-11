@@ -1,15 +1,9 @@
 import { connect } from 'react-redux';
-import { createSelector } from 'reselect';
 import { setAuthorOverviewOption } from 'Store/Actions/authorIndexActions';
 import AuthorIndexOverviewOptionsModalContent from './AuthorIndexOverviewOptionsModalContent';
 
 function createMapStateToProps() {
-  return createSelector(
-    (state) => state.authorIndex,
-    (authorIndex) => {
-      return authorIndex.overviewOptions;
-    }
-  );
+  return (state) => state.authorIndex.overviewOptions;
 }
 
 function createMapDispatchToProps(dispatch, props) {

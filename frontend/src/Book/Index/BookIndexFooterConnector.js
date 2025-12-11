@@ -30,19 +30,12 @@ function createUnoptimizedSelector() {
 function createBookSelector() {
   return createDeepEqualSelector(
     createUnoptimizedSelector(),
-    (book) => book
+    (books) => ({ book: books })
   );
 }
 
 function createMapStateToProps() {
-  return createSelector(
-    createBookSelector(),
-    (book) => {
-      return {
-        book
-      };
-    }
-  );
+  return createBookSelector();
 }
 
 export default connect(createMapStateToProps)(BookIndexFooter);

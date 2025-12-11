@@ -28,19 +28,12 @@ function createUnoptimizedSelector() {
 function createAuthorSelector() {
   return createDeepEqualSelector(
     createUnoptimizedSelector(),
-    (author) => author
+    (authors) => ({ author: authors })
   );
 }
 
 function createMapStateToProps() {
-  return createSelector(
-    createAuthorSelector(),
-    (author) => {
-      return {
-        author
-      };
-    }
-  );
+  return createAuthorSelector();
 }
 
 export default connect(createMapStateToProps)(AuthorIndexFooter);

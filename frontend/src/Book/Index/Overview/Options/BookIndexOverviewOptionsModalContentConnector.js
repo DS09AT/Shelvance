@@ -1,21 +1,15 @@
 import { connect } from 'react-redux';
-import { createSelector } from 'reselect';
-import { setAuthorOverviewOption } from 'Store/Actions/authorIndexActions';
+import { setBookOverviewOption } from 'Store/Actions/bookIndexActions';
 import BookIndexOverviewOptionsModalContent from './BookIndexOverviewOptionsModalContent';
 
 function createMapStateToProps() {
-  return createSelector(
-    (state) => state.authorIndex,
-    (authorIndex) => {
-      return authorIndex.overviewOptions;
-    }
-  );
+  return (state) => state.bookIndex.overviewOptions;
 }
 
 function createMapDispatchToProps(dispatch, props) {
   return {
     onChangeOverviewOption(payload) {
-      dispatch(setAuthorOverviewOption(payload));
+      dispatch(setBookOverviewOption(payload));
     }
   };
 }

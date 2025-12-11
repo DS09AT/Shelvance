@@ -1,15 +1,9 @@
 import { connect } from 'react-redux';
-import { createSelector } from 'reselect';
 import { setAuthorPosterOption } from 'Store/Actions/authorIndexActions';
 import AuthorIndexPosterOptionsModalContent from './AuthorIndexPosterOptionsModalContent';
 
 function createMapStateToProps() {
-  return createSelector(
-    (state) => state.authorIndex,
-    (authorIndex) => {
-      return authorIndex.posterOptions;
-    }
-  );
+  return (state) => state.authorIndex.posterOptions;
 }
 
 function createMapDispatchToProps(dispatch, props) {

@@ -1,15 +1,9 @@
 import { connect } from 'react-redux';
-import { createSelector } from 'reselect';
 import { setBookPosterOption } from 'Store/Actions/bookIndexActions';
 import BookIndexPosterOptionsModalContent from './BookIndexPosterOptionsModalContent';
 
 function createMapStateToProps() {
-  return createSelector(
-    (state) => state.bookIndex,
-    (bookIndex) => {
-      return bookIndex.posterOptions;
-    }
-  );
+  return (state) => state.bookIndex.posterOptions;
 }
 
 function createMapDispatchToProps(dispatch, props) {

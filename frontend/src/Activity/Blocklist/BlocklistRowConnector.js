@@ -5,14 +5,13 @@ import createAuthorSelector from 'Store/Selectors/createAuthorSelector';
 import BlocklistRow from './BlocklistRow';
 
 function createMapStateToProps() {
-  return createSelector(
-    createAuthorSelector(),
-    (author) => {
-      return {
-        author
-      };
-    }
-  );
+  const authorSelector = createAuthorSelector();
+  
+  return (state, props) => {
+    return {
+      author: authorSelector(state, props)
+    };
+  };
 }
 
 function createMapDispatchToProps(dispatch, props) {

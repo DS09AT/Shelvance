@@ -1,21 +1,19 @@
 import { connect } from 'react-redux';
-import { createSelector } from 'reselect';
 import { fetchHistory, markAsFailed } from 'Store/Actions/historyActions';
 import createAuthorSelector from 'Store/Selectors/createAuthorSelector';
 import createBookSelector from 'Store/Selectors/createBookSelector';
 import AuthorHistoryRow from './AuthorHistoryRow';
 
 function createMapStateToProps() {
-  return createSelector(
-    createAuthorSelector(),
-    createBookSelector(),
-    (author, book) => {
-      return {
-        author,
-        book
-      };
-    }
-  );
+  const authorSelector = createAuthorSelector();
+  const bookSelector = createBookSelector();
+  
+  return (state, props) => {
+    return {
+      author: authorSelector(state, props),
+      book: bookSelector(state, props)
+    };
+  };
 }
 
 const mapDispatchToProps = {

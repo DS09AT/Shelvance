@@ -1,16 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { createSelector } from 'reselect';
 import { authorHistoryMarkAsFailed, clearAuthorHistory, fetchAuthorHistory } from 'Store/Actions/authorHistoryActions';
 
 function createMapStateToProps() {
-  return createSelector(
-    (state) => state.authorHistory,
-    (authorHistory) => {
-      return authorHistory;
-    }
-  );
+  return (state) => state.authorHistory;
 }
 
 const mapDispatchToProps = {

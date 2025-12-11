@@ -6,7 +6,7 @@ import BookIndexOverviews from './BookIndexOverviews';
 
 function createMapStateToProps() {
   return createSelector(
-    (state) => state.authorIndex.overviewOptions,
+    (state) => state.bookIndex.overviewOptions,
     createUISettingsSelector(),
     createDimensionsSelector(),
     (overviewOptions, uiSettings, dimensions) => {

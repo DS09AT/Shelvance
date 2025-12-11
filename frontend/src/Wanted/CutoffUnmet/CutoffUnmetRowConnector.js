@@ -1,17 +1,15 @@
 import { connect } from 'react-redux';
-import { createSelector } from 'reselect';
 import createAuthorSelector from 'Store/Selectors/createAuthorSelector';
 import CutoffUnmetRow from './CutoffUnmetRow';
 
 function createMapStateToProps() {
-  return createSelector(
-    createAuthorSelector(),
-    (author) => {
-      return {
-        author
-      };
-    }
-  );
+  const authorSelector = createAuthorSelector();
+  
+  return (state, props) => {
+    return {
+      author: authorSelector(state, props)
+    };
+  };
 }
 
 export default connect(createMapStateToProps)(CutoffUnmetRow);

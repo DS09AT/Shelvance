@@ -2,11 +2,11 @@ import { createSelector, createSelectorCreator, lruMemoize } from 'reselect';
 import hasDifferentItemsOrOrder from 'Utilities/Object/hasDifferentItemsOrOrder';
 import createClientSideCollectionSelector from './createClientSideCollectionSelector';
 
-function createUnoptimizedSelector(uiSection) {
+function createMappedItemsSelector(uiSection) {
   return createSelector(
     createClientSideCollectionSelector('authors', uiSection),
     (authors) => {
-      const items = authors.items.map((s) => {
+      return authors.items.map((s) => {
         const {
           id,
           sortName,
@@ -19,7 +19,15 @@ function createUnoptimizedSelector(uiSection) {
           sortNameLastFirst
         };
       });
+    }
+  );
+}
 
+function createUnoptimizedSelector(uiSection) {
+  return createSelector(
+    createClientSideCollectionSelector('authors', uiSection),
+    createMappedItemsSelector(uiSection),
+    (authors, items) => {
       return {
         ...authors,
         items
@@ -38,10 +46,7 @@ const createAuthorEqualSelector = createSelectorCreator(
 );
 
 function createAuthorClientSideCollectionItemsSelector(uiSection) {
-  return createAuthorEqualSelector(
-    createUnoptimizedSelector(uiSection),
-    (author) => author
-  );
+  return createUnoptimizedSelector(uiSection);
 }
 
 export default createAuthorClientSideCollectionItemsSelector;
