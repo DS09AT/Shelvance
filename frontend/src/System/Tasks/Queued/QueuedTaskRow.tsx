@@ -2,6 +2,7 @@ import moment from 'moment';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CommandBody } from 'Commands/Command';
+import { AppDispatch } from 'Store/types';
 import Icon from 'Components/Icon';
 import IconButton from 'Components/Link/IconButton';
 import ConfirmModal from 'Components/Modal/ConfirmModal';
@@ -115,7 +116,7 @@ export default function QueuedTaskRow(props: QueuedTaskRowProps) {
     clientUserAgent,
   } = props;
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const { longDateFormat, shortDateFormat, showRelativeDates, timeFormat } =
     useSelector(createUISettingsSelector());
 

@@ -1,6 +1,6 @@
 import { routerMiddleware } from 'connected-react-router';
 import { applyMiddleware, compose } from 'redux';
-import thunk from 'redux-thunk';
+import { thunk } from 'redux-thunk';
 import createPersistState from './createPersistState';
 import createSentryMiddleware from './createSentryMiddleware';
 

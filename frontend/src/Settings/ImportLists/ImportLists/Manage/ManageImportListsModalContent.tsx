@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ImportListAppState } from 'App/State/SettingsAppState';
+import { AppDispatch } from 'Store/types';
 import Alert from 'Components/Alert';
 import Button from 'Components/Link/Button';
 import SpinnerButton from 'Components/Link/SpinnerButton';
@@ -97,7 +98,7 @@ function ManageImportListsModalContent(
   }: ImportListAppState = useSelector(
     createClientSideCollectionSelector('settings.importLists')
   );
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);

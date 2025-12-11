@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AppState from 'App/State/AppState';
+import { AppDispatch } from 'Store/types';
 import FieldSet from 'Components/FieldSet';
 import LoadingIndicator from 'Components/Loading/LoadingIndicator';
 import Table from 'Components/Table/Table';
@@ -47,7 +48,7 @@ const columns = [
 ];
 
 export default function QueuedTasks() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const { isFetching, isPopulated, items } = useSelector(
     (state: AppState) => state.commands
   );

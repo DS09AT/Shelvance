@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSelector } from 'reselect';
 import AppState from 'App/State/AppState';
+import { AppDispatch } from 'Store/types';
 import * as commandNames from 'Commands/commandNames';
 import Alert from 'Components/Alert';
 import Icon from 'Components/Icon';
@@ -71,7 +72,7 @@ function Updates() {
     updateMechanism,
   } = useSelector(createUpdatesSelector());
 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [isMajorUpdateModalOpen, setIsMajorUpdateModalOpen] = useState(false);
   const hasError = !!(updatesError || generalSettingsError);
   const hasUpdates = isPopulated && !hasError && items.length > 0;
