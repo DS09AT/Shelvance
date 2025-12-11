@@ -83,7 +83,9 @@ function AppRoutes() {
       <Route path="system/backup" element={<BackupsConnector />} />
       <Route path="system/updates" element={<Updates />} />
       <Route path="system/events" element={<LogsTableConnector />} />
-      <Route path="system/logs/files/*" element={<Logs />} />
+      <Route path="system/logs/files">
+        <Route path="*" element={<Logs />} />
+      </Route>
 
       {/* Not Found */}
       <Route path="*" element={<NotFound />} />
