@@ -18,10 +18,12 @@ function createMapStateToProps() {
     (state) => state.settings.metadataProfiles,
     createProviderSettingsSelector('importLists'),
     (advancedSettings, metadataProfiles, importList) => {
+      const showMetadataProfile = metadataProfiles.items.length > 1;
+      
       return {
+        ...importList,
         advancedSettings,
-        showMetadataProfile: metadataProfiles.items.length > 1,
-        ...importList
+        showMetadataProfile
       };
     }
   );

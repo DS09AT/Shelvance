@@ -19,7 +19,7 @@ const VirtualTableRowCell = React.forwardRef(function VirtualTableRowCell(props,
 });
 
 VirtualTableRowCell.propTypes = {
-  className: PropTypes.string.isRequired,
+  className: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.string, PropTypes.node])
 };
 

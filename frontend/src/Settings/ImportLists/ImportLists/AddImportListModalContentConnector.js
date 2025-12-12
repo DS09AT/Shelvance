@@ -10,22 +10,15 @@ function createMapStateToProps() {
   return createSelector(
     (state) => state.settings.importLists,
     (importLists) => {
-      const {
-        isSchemaFetching,
-        isSchemaPopulated,
-        schemaError,
-        schema
-      } = importLists;
-
-      const listGroups = _.chain(schema)
+      const listGroups = _.chain(importLists.schema)
         .sortBy((o) => o.listOrder)
         .groupBy('listType')
         .value();
 
       return {
-        isSchemaFetching,
-        isSchemaPopulated,
-        schemaError,
+        isSchemaFetching: importLists.isSchemaFetching,
+        isSchemaPopulated: importLists.isSchemaPopulated,
+        schemaError: importLists.schemaError,
         listGroups
       };
     }

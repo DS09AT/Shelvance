@@ -53,7 +53,7 @@ namespace Readarr.Api.V1.Books
                 return null;
             }
 
-            var selectedEdition = model.Editions?.Value.Where(x => x.Monitored).SingleOrDefault();
+            var selectedEdition = model.Editions?.Value?.Where(x => x.Monitored).SingleOrDefault();
 
             var title = selectedEdition?.Title ?? model.Title;
             var authorTitle = $"{model.Author?.Value?.Metadata?.Value?.SortNameLastFirst} {title}";

@@ -22,7 +22,7 @@ function SpinnerIcon(props) {
 
 SpinnerIcon.propTypes = {
   name: PropTypes.object.isRequired,
-  spinningName: PropTypes.object.isRequired,
+  spinningName: PropTypes.object,
   isSpinning: PropTypes.bool.isRequired
 };
 

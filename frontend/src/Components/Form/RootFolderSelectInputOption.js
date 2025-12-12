@@ -68,7 +68,7 @@ function RootFolderSelectInputOption(props) {
 
 RootFolderSelectInputOption.propTypes = {
   id: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
+  name: PropTypes.string,
   value: PropTypes.string.isRequired,
   freeSpace: PropTypes.number,
   authorFolder: PropTypes.string,

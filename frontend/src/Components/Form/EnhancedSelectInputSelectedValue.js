@@ -22,9 +22,9 @@ function EnhancedSelectInputSelectedValue(props) {
 }
 
 EnhancedSelectInputSelectedValue.propTypes = {
-  className: PropTypes.string.isRequired,
+  className: PropTypes.string,
   children: PropTypes.node,
-  isDisabled: PropTypes.bool.isRequired
+  isDisabled: PropTypes.bool
 };
 
 export default EnhancedSelectInputSelectedValue;

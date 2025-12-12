@@ -29,7 +29,7 @@ function BookStatusCell(props) {
 }
 
 BookStatusCell.propTypes = {
-  className: PropTypes.string.isRequired,
+  className: PropTypes.string,
   monitored: PropTypes.bool.isRequired,
   component: PropTypes.elementType
 };

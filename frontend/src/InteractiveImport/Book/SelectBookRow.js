@@ -110,7 +110,7 @@ class SelectBookRow extends Component {
 SelectBookRow.propTypes = {
   id: PropTypes.number.isRequired,
   title: PropTypes.string.isRequired,
-  releaseDate: PropTypes.string.isRequired,
+  releaseDate: PropTypes.string,
   onBookSelect: PropTypes.func.isRequired,
   statistics: PropTypes.object.isRequired,
   monitored: PropTypes.bool.isRequired,

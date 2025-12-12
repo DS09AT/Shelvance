@@ -2,8 +2,8 @@ import PropTypes from 'prop-types';
 
 const settingShape = {
   value: PropTypes.oneOf([PropTypes.bool, PropTypes.number, PropTypes.string]),
-  warnings: PropTypes.arrayOf(PropTypes.string).isRequired,
-  errors: PropTypes.arrayOf(PropTypes.string).isRequired
+  warnings: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.object])).isRequired,
+  errors: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.object])).isRequired
 };
 
 export const arraySettingShape = {

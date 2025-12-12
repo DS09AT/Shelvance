@@ -20,7 +20,24 @@ namespace NzbDrone.Core.ImportLists.Exclusions
                 return true;
             }
 
-            return !_importListExclusionService.All().Exists(s => s.ForeignId == context.PropertyValue.ToString());
+            // Try to get ID from the instance being validated using reflection
+            var instanceId = 0;
+            var instance = context.InstanceToValidate;
+            
+            if (instance != null)
+            {
+                var idProperty = instance.GetType().GetProperty("Id");
+                if (idProperty != null)
+                {
+                    var idValue = idProperty.GetValue(instance);
+                    if (idValue is int id)
+                    {
+                        instanceId = id;
+                    }
+                }
+            }
+
+            return !_importListExclusionService.All().Exists(s => s.ForeignId == context.PropertyValue.ToString() && s.Id != instanceId);
         }
     }
 }

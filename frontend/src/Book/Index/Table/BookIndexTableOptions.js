@@ -78,7 +78,7 @@ class BookIndexTableOptions extends Component {
 }
 
 BookIndexTableOptions.propTypes = {
-  showBanners: PropTypes.bool.isRequired,
+  showBanners: PropTypes.bool,
   showSearchAction: PropTypes.bool.isRequired,
   onTableOptionChange: PropTypes.func.isRequired
 };

@@ -39,7 +39,7 @@ function AuthorStatusCell(props) {
 }
 
 AuthorStatusCell.propTypes = {
-  className: PropTypes.string.isRequired,
+  className: PropTypes.string,
   monitored: PropTypes.bool.isRequired,
   status: PropTypes.string.isRequired,
   component: PropTypes.elementType
