@@ -36,8 +36,14 @@ namespace NzbDrone.Core.MediaCover
                 return null;
             }
 
-            // Validate URL format before caching
-            if (!Uri.TryCreate(url, UriKind.Absolute, out _))
+            // Validate URL format and scheme
+            if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
+            {
+                return null;
+            }
+
+            // Only accept HTTP and HTTPS schemes
+            if (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps)
             {
                 return null;
             }
