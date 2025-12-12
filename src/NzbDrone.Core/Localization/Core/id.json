@@ -112,6 +112,7 @@
   "NoChange": "Tidak Ada Perubahan",
   "Path": "Path",
   "PleaseEnterAtLeastThreeCharactersToSearch": "Harap masukkan setidaknya 3 karakter untuk mencari",
+  "Priority": "Prioritas",
   "Profiles": "Profil",
   "ProxyCheckBadRequestMessage": "Gagal menguji proxy. Kode Status: {0}",
   "ProxyCheckFailedToTestMessage": "Gagal menguji proxy: {0}",
