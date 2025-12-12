@@ -336,7 +336,7 @@ BookDetails.propTypes = {
   seriesTitle: PropTypes.string.isRequired,
   pageCount: PropTypes.number,
   overview: PropTypes.string,
-  releaseDate: PropTypes.string.isRequired,
+  releaseDate: PropTypes.string,
   ratings: PropTypes.object.isRequired,
   images: PropTypes.arrayOf(PropTypes.object).isRequired,
   links: PropTypes.arrayOf(PropTypes.object).isRequired,

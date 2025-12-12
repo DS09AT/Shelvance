@@ -1,7 +1,6 @@
 import { createAction } from 'redux-actions';
 import { batchActions } from 'redux-batched-actions';
 import { createThunk, handleThunks } from 'Store/thunks';
-import getProviderState from 'Utilities/State/getProviderState';
 import { updateItem } from './baseActions';
 import createFetchHandler from './Creators/createFetchHandler';
 import createHandleActions from './Creators/createHandleActions';
@@ -49,10 +48,15 @@ export const actionHandlers = handleThunks({
       ...otherPayload
     } = payload;
 
-    const saveData = getProviderState({ id, ...otherPayload }, getState, 'books');
+    const state = getState();
+    const { items: editions } = state.editions;
+
+    if (!editions || editions.length === 0) {
+      return;
+    }
 
     dispatch(batchActions([
-      ...saveData.editions.map((edition) => {
+      ...editions.map((edition) => {
         return updateItem({
           id: edition.id,
           section: 'editions',

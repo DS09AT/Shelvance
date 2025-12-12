@@ -28,7 +28,7 @@ function BookEditorFooterLabel(props) {
 }
 
 BookEditorFooterLabel.propTypes = {
-  className: PropTypes.string.isRequired,
+  className: PropTypes.string,
   label: PropTypes.string.isRequired,
   isSaving: PropTypes.bool.isRequired
 };

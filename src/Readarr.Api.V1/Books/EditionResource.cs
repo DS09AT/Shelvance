@@ -111,6 +111,11 @@ namespace Readarr.Api.V1.Books
 
         public static List<Edition> ToModel(this IEnumerable<EditionResource> resources)
         {
+            if (resources == null)
+            {
+                return null;
+            }
+
             return resources.Select(ToModel).ToList();
         }
     }
