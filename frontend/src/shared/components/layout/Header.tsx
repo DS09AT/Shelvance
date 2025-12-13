@@ -75,7 +75,7 @@ export function Header({ className, mobileNavOpen, setMobileNavOpen }: HeaderPro
         <div className="flex items-center gap-5 lg:hidden">
           <MobileNavigation isOpen={mobileNavOpen} setIsOpen={setMobileNavOpen} />
           <a href="/" aria-label="Home">
-            <Logo className="h-6" />
+            <Logo className="h-8 w-8" />
           </a>
         </div>
         <div className="flex items-center gap-5">

@@ -8,6 +8,7 @@ const rootDir = path.resolve(__dirname, '..');
 export default defineConfig({
   root: rootDir,
   plugins: [react(), tailwindcss()],
+  publicDir: path.resolve(rootDir, 'assets'),
   resolve: {
     alias: {
       '@': path.resolve(rootDir, 'src'),

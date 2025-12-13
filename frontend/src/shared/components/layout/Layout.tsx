@@ -22,7 +22,9 @@ export function Layout({ children }: LayoutProps) {
       >
         <div className="contents lg:pointer-events-auto lg:block lg:w-72 lg:overflow-y-auto lg:border-r lg:border-zinc-900/10 lg:px-6 lg:pb-8 lg:pt-4 lg:dark:border-white/10 xl:w-80">
           <div className="hidden lg:flex">
-            <Logo className="h-6" />
+            <a href="/" aria-label="Home">
+              <Logo className="h-8 w-8" />
+            </a>
           </div>
           <Header mobileNavOpen={mobileNavOpen} setMobileNavOpen={setMobileNavOpen} />
           <Navigation className="hidden lg:mt-10 lg:block" />
