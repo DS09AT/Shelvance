@@ -1,14 +1,23 @@
 import clsx from 'clsx';
 
-interface ProseProps {
-  children: React.ReactNode;
+export function Prose<T extends React.ElementType = 'div'>({
+  as,
+  className,
+  ...props
+}: Omit<React.ComponentPropsWithoutRef<T>, 'as' | 'className'> & {
+  as?: T;
   className?: string;
-}
+}) {
+  const Component = as ?? 'div';
 
-export function Prose({ children, className }: ProseProps) {
   return (
-    <div className={clsx('prose prose-zinc dark:prose-invert max-w-none', className)}>
-      {children}
-    </div>
+    <Component
+      className={clsx(
+        className,
+        'prose dark:prose-invert',
+        '[html_:where(&>*)]:mx-auto [html_:where(&>*)]:max-w-2xl lg:[html_:where(&>*)]:mx-[calc(50%-min(50%,var(--container-lg)))] lg:[html_:where(&>*)]:max-w-3xl',
+      )}
+      {...props}
+    />
   );
 }

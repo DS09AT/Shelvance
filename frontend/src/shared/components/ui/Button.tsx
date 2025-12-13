@@ -2,9 +2,7 @@ import clsx from 'clsx';
 
 function ArrowIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
-    <svg viewBox="0 0 20 20" fill="none"
-      aria-hidden="true" {...props}
-    >
+    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" {...props}>
       <path
         stroke="currentColor"
         strokeLinecap="round"
@@ -30,13 +28,18 @@ const variantStyles = {
 type ButtonProps = {
   variant?: keyof typeof variantStyles;
   arrow?: 'left' | 'right';
-} & React.ComponentPropsWithoutRef<'button'>;
+  href?: string;
+} & (
+  | (React.ComponentPropsWithoutRef<'button'> & { href?: never })
+  | (React.ComponentPropsWithoutRef<'a'> & { href: string })
+);
 
 export function Button({
   variant = 'primary',
   className,
   children,
   arrow,
+  href,
   ...props
 }: ButtonProps) {
   const combinedClassName = clsx(
@@ -56,11 +59,25 @@ export function Button({
     />
   );
 
-  return (
-    <button className={combinedClassName} {...props}>
+  const content = (
+    <>
       {arrow === 'left' && arrowIcon}
       {children}
       {arrow === 'right' && arrowIcon}
+    </>
+  );
+
+  if (href) {
+    return (
+      <a className={combinedClassName} href={href} {...(props as React.ComponentPropsWithoutRef<'a'>)}>
+        {content}
+      </a>
+    );
+  }
+
+  return (
+    <button className={combinedClassName} {...(props as React.ComponentPropsWithoutRef<'button'>)}>
+      {content}
     </button>
   );
 }

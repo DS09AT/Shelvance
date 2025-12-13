@@ -22,6 +22,9 @@ export * from './Navigation';
 // Feedback Components
 export * from './Feedback';
 
+// App Shell Components (main app layout)
+export * from './AppShell';
+
 // Types
 export type {
   Size,
