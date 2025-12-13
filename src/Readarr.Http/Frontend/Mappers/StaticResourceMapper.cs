@@ -30,16 +30,17 @@ namespace Readarr.Http.Frontend.Mappers
         {
             resourceUrl = resourceUrl.ToLowerInvariant();
 
-            if (resourceUrl.StartsWith("/content/images/icons/manifest") ||
-                resourceUrl.StartsWith("/content/images/icons/browserconfig"))
-            {
-                return false;
-            }
-
-            return resourceUrl.StartsWith("/content") ||
-                   resourceUrl.EndsWith(".js") ||
+            return resourceUrl.EndsWith(".js") ||
                    resourceUrl.EndsWith(".map") ||
                    resourceUrl.EndsWith(".css") ||
+                   resourceUrl.EndsWith(".svg") ||
+                   resourceUrl.EndsWith(".png") ||
+                   resourceUrl.EndsWith(".jpg") ||
+                   resourceUrl.EndsWith(".jpeg") ||
+                   resourceUrl.EndsWith(".woff") ||
+                   resourceUrl.EndsWith(".woff2") ||
+                   resourceUrl.EndsWith(".ttf") ||
+                   resourceUrl.EndsWith(".webmanifest") ||
                    (resourceUrl.EndsWith(".ico") && !resourceUrl.Equals("/favicon.ico")) ||
                    resourceUrl.EndsWith(".swf") ||
                    resourceUrl.EndsWith("oauth.html");

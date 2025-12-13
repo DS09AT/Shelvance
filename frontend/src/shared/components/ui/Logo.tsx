@@ -5,7 +5,7 @@ export function Logo(props: React.ComponentPropsWithoutRef<'img'>) {
 
   return (
     <img
-      src="/content/images/Logo.svg"
+      src="/Logo.svg"
       alt="Readarr"
       width={32}
       height={32}

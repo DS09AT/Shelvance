@@ -18,8 +18,12 @@ function SearchDialog({ open, setOpen }: { open: boolean; setOpen: (open: boolea
   const [query, setQuery] = useState('');
 
   useEffect(() => {
-    if (open && inputRef.current) {
-      inputRef.current.focus();
+    if (open) {
+      // Delay focusing to allow the modal transition to complete
+      const timer = setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100); // Small delay of 100ms
+      return () => clearTimeout(timer);
     }
   }, [open]);
 

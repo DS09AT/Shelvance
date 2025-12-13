@@ -9,6 +9,7 @@ export default defineConfig({
   root: rootDir,
   plugins: [react(), tailwindcss()],
   publicDir: path.resolve(rootDir, 'assets'),
+  base: './',
   resolve: {
     alias: {
       '@': path.resolve(rootDir, 'src'),
@@ -47,6 +48,7 @@ export default defineConfig({
           vendor: ['react', 'react-dom', 'react-router-dom'],
           redux: ['react-redux', 'redux', 'redux-thunk'],
         },
+        assetFileNames: 'images/[name][extname]',
       },
     },
   },
