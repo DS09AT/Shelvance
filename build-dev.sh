@@ -217,21 +217,21 @@ BuildFrontendIncremental()
 {
     ProgressStart "Building frontend (incremental)"
     
-    echo "  Running webpack..."
-    export SKIP_TYPE_CHECK=true
-    yarn webpack --config ./frontend/build/webpack.config.dev.js \
-        --env development \
-        --stats minimal
+    echo "  Running vite build..."
+    cd frontend
+    npm run build
+    local exit_code=$?
+    cd ..
     
-    if [ $? -ne 0 ]; then
+    if [ $exit_code -ne 0 ]; then
         echo "Failed to build frontend"
         return 1
     fi
     
     echo "  Copying UI to $devFolder/UI..."
-    if [ -d "_output/UI" ]; then
+    if [ -d "frontend/dist" ]; then
         mkdir -p "$devFolder/UI"
-        cp -r _output/UI/* "$devFolder/UI/"
+        cp -r frontend/dist/* "$devFolder/UI/"
     fi
     
     ProgressEnd "Frontend build ($(date +%H:%M:%S))"
@@ -241,18 +241,21 @@ BuildFrontendFull()
 {
     ProgressStart "Building frontend (full)"
     
-    echo "  Running yarn build..."
-    yarn run build --env development
+    echo "  Running npm build..."
+    cd frontend
+    npm run build
+    local exit_code=$?
+    cd ..
     
-    if [ $? -ne 0 ]; then
+    if [ $exit_code -ne 0 ]; then
         echo "Failed to build frontend"
         return 1
     fi
     
     echo "  Copying UI to $devFolder/UI..."
-    if [ -d "_output/UI" ]; then
+    if [ -d "frontend/dist" ]; then
         mkdir -p "$devFolder/UI"
-        cp -r _output/UI/* "$devFolder/UI/"
+        cp -r frontend/dist/* "$devFolder/UI/"
     fi
     
     ProgressEnd "Frontend build ($(date +%H:%M:%S))"
@@ -270,16 +273,19 @@ RestoreDependencies()
         return 1
     fi
     
-    if [ ! -d "node_modules" ]; then
-        echo "  Installing yarn packages..."
-        yarn install --frozen-lockfile --network-timeout 120000
+    if [ ! -d "frontend/node_modules" ]; then
+        echo "  Installing npm packages..."
+        cd frontend
+        npm install
+        local npm_exit=$?
+        cd ..
         
-        if [ $? -ne 0 ]; then
-            echo "Failed to install yarn packages"
+        if [ $npm_exit -ne 0 ]; then
+            echo "Failed to install npm packages"
             return 1
         fi
     else
-        echo "  Yarn packages already installed"
+        echo "  NPM packages already installed"
     fi
     
     ProgressEnd "Dependencies restored"
@@ -422,23 +428,21 @@ WatchMode()
     fi
     
     if [ "$SKIP_FRONTEND" = false ]; then
-        echo "Frontend: Webpack watch mode"
+        echo "Frontend: Vite watch mode"
         (
-            export SKIP_TYPE_CHECK=true
-            yarn webpack --config ./frontend/build/webpack.config.dev.js \
-                --env development \
-                --watch \
-                --stats minimal &
-            local webpack_pid=$!
+            cd frontend
+            npm run dev &
+            local vite_pid=$!
+            cd ..
             
-            while kill -0 $webpack_pid 2>/dev/null; do
+            while kill -0 $vite_pid 2>/dev/null; do
                 sleep 2
-                if [ -d "_output/UI" ]; then
+                if [ -d "frontend/dist" ]; then
                     mkdir -p "$devFolder/UI"
                     if command -v rsync &> /dev/null; then
-                        rsync -a --delete _output/UI/ "$devFolder/UI/" 2>/dev/null || true
+                        rsync -a --delete frontend/dist/ "$devFolder/UI/" 2>/dev/null || true
                     else
-                        cp -r _output/UI/* "$devFolder/UI/" 2>/dev/null || true
+                        cp -r frontend/dist/* "$devFolder/UI/" 2>/dev/null || true
                     fi
                 fi
             done

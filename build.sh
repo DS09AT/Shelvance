@@ -51,16 +51,10 @@ EnableExtraPlatforms()
 LintUI()
 {
     ProgressStart 'ESLint'
-    yarn lint
+    cd frontend
+    npm run lint
+    cd ..
     ProgressEnd 'ESLint'
-
-    ProgressStart 'Stylelint'
-    if [ "$os" = "windows" ]; then
-        yarn stylelint-windows
-    else
-        yarn stylelint-linux
-    fi
-    ProgressEnd 'Stylelint'
 }
 
 Build()
@@ -88,18 +82,22 @@ Build()
     ProgressEnd 'Build'
 }
 
-YarnInstall()
+NpmInstall()
 {
-    ProgressStart 'yarn install'
-    yarn install --frozen-lockfile --network-timeout 120000
-    ProgressEnd 'yarn install'
+    ProgressStart 'npm install'
+    cd frontend
+    npm install
+    cd ..
+    ProgressEnd 'npm install'
 }
 
-RunWebpack()
+RunVite()
 {
-    ProgressStart 'Running webpack'
-    yarn run build --env production
-    ProgressEnd 'Running webpack'
+    ProgressStart 'Running vite build'
+    cd frontend
+    npm run build
+    cd ..
+    ProgressEnd 'Running vite build'
 }
 
 PackageFiles()
@@ -112,7 +110,7 @@ PackageFiles()
     mkdir -p $folder
     cp -r $outputFolder/$framework/$runtime/publish/* $folder
     cp -r $outputFolder/Readarr.Update/$framework/$runtime/publish $folder/Readarr.Update
-    cp -r $outputFolder/UI $folder
+    cp -r frontend/dist $folder/UI
 
     echo "Adding LICENSE"
     cp LICENSE.md $folder
@@ -394,7 +392,7 @@ fi
 
 if [[ "$LINT" = "YES" || "$FRONTEND" = "YES" ]];
 then
-    YarnInstall
+    NpmInstall
 fi
 
 if [ "$LINT" = "YES" ];
@@ -404,7 +402,7 @@ fi
 
 if [ "$FRONTEND" = "YES" ];
 then
-    RunWebpack
+    RunVite
 fi
 
 if [ "$PACKAGES" = "YES" ];

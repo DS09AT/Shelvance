@@ -1,0 +1,290 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+/**
+ * Tailwind v4.1 Theme Configuration for Readarr
+ * Maps existing theme variables to Tailwind design tokens
+ * Supports both dark and light modes
+ */
+
+@theme {
+  /* Breakpoints - matching existing Readarr breakpoints */
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 768px;
+  --breakpoint-md: 992px;
+  --breakpoint-lg: 1310px;
+  --breakpoint-xl: 1450px;
+
+  /* Spacing - 4px base grid system */
+  --spacing-0: 0;
+  --spacing-1: 0.25rem;  /* 4px */
+  --spacing-2: 0.5rem;   /* 8px */
+  --spacing-3: 0.75rem;  /* 12px */
+  --spacing-4: 1rem;     /* 16px */
+  --spacing-5: 1.25rem;  /* 20px */
+  --spacing-6: 1.5rem;   /* 24px */
+  --spacing-8: 2rem;     /* 32px */
+  --spacing-10: 2.5rem;  /* 40px */
+  --spacing-12: 3rem;    /* 48px */
+  --spacing-16: 4rem;    /* 64px */
+  --spacing-20: 5rem;    /* 80px */
+  --spacing-24: 6rem;    /* 96px */
+
+  /* Readarr Brand Colors */
+  --color-readarr-red-50: #ffe5e5;
+  --color-readarr-red-100: #ffb3b3;
+  --color-readarr-red-200: #ff8080;
+  --color-readarr-red-300: #ff4d4d;
+  --color-readarr-red-400: #ff1a1a;
+  --color-readarr-red-500: #ca302d;  /* Primary brand color */
+  --color-readarr-red-600: #a41726;
+  --color-readarr-red-700: #810020;
+  --color-readarr-red-800: #66001a;
+  --color-readarr-red-900: #4d0013;
+
+  /* Semantic Colors - Status */
+  --color-success: #27c24c;
+  --color-success-light: #dff0d8;
+  --color-success-dark: #1f9c3d;
+  
+  --color-warning: #ffa500;
+  --color-warning-light: #fcf8e3;
+  --color-warning-dark: #fc7800;
+  
+  --color-danger: #f05050;
+  --color-danger-light: #f2dede;
+  --color-danger-dark: #ec2626;
+  
+  --color-info: #5d9cec;
+  --color-info-light: #d9edf7;
+  --color-info-dark: #3483e7;
+
+  /* Neutral Colors - Zinc palette for modern UI */
+  --color-neutral-50: #fafafa;
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-200: #e5e5e5;
+  --color-neutral-300: #d4d4d4;
+  --color-neutral-400: #a3a3a3;
+  --color-neutral-500: #737373;
+  --color-neutral-600: #525252;
+  --color-neutral-700: #404040;
+  --color-neutral-800: #262626;
+  --color-neutral-900: #171717;
+  --color-neutral-950: #0a0a0a;
+
+  /* Typography - Font sizes */
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-lg: 1.125rem;   /* 18px */
+  --font-size-xl: 1.25rem;    /* 20px */
+  --font-size-2xl: 1.5rem;    /* 24px */
+  --font-size-3xl: 1.875rem;  /* 30px */
+  --font-size-4xl: 2.25rem;   /* 36px */
+
+  /* Font weights */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Line heights */
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+
+  /* Border radius */
+  --radius-none: 0;
+  --radius-sm: 0.125rem;   /* 2px */
+  --radius-base: 0.25rem;  /* 4px */
+  --radius-md: 0.375rem;   /* 6px */
+  --radius-lg: 0.5rem;     /* 8px */
+  --radius-xl: 0.75rem;    /* 12px */
+  --radius-2xl: 1rem;      /* 16px */
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-base: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+  /* Z-Index layers */
+  --z-index-base: 0;
+  --z-index-dropdown: 1000;
+  --z-index-sticky: 1020;
+  --z-index-fixed: 1030;
+  --z-index-modal-backdrop: 1040;
+  --z-index-modal: 1050;
+  --z-index-popover: 1060;
+  --z-index-tooltip: 1070;
+
+  /* Transitions */
+  --transition-fast: 150ms;
+  --transition-base: 200ms;
+  --transition-slow: 300ms;
+}
+
+/**
+ * Light Mode Theme Variables
+ * Default theme matching Readarr's light theme
+ */
+:root {
+  /* Text colors */
+  --text-primary: #515253;
+  --text-secondary: #909293;
+  --text-disabled: #999999;
+  --text-inverse: #ffffff;
+
+  /* Background colors */
+  --bg-page: #f5f7fa;
+  --bg-card: #ffffff;
+  --bg-card-alt: #f5f5f5;
+  --bg-input: #ffffff;
+  --bg-input-readonly: #eeeeee;
+  --bg-header: #ca302d;
+  --bg-sidebar: #353535;
+  --bg-toolbar: #810020;
+  --bg-modal: #ffffff;
+  --bg-modal-backdrop: rgba(0, 0, 0, 0.6);
+
+  /* Border colors */
+  --border-default: #e5e5e5;
+  --border-input: #dde6e9;
+  --border-focus: #66afe9;
+
+  /* Button colors */
+  --btn-default-bg: #ffffff;
+  --btn-default-border: #eaeaea;
+  --btn-default-hover: #f5f5f5;
+  --btn-default-text: #eeeeee;
+
+  --btn-primary-bg: #5d9cec;
+  --btn-primary-border: #5899eb;
+  --btn-primary-hover: #4b91ea;
+  --btn-primary-text: #ffffff;
+
+  --btn-success-bg: #27c24c;
+  --btn-success-hover: #24b145;
+  --btn-success-text: #ffffff;
+
+  --btn-warning-bg: #ff902b;
+  --btn-warning-hover: #ff8517;
+  --btn-warning-text: #ffffff;
+
+  --btn-danger-bg: #f05050;
+  --btn-danger-hover: #ee3d3d;
+  --btn-danger-text: #ffffff;
+
+  /* Link colors */
+  --link-default: #5d9cec;
+  --link-hover: #1b72e2;
+
+  /* Sidebar */
+  --sidebar-text: #e1e2e3;
+  --sidebar-bg: #353535;
+  --sidebar-active-bg: #252525;
+
+  /* Table */
+  --table-row-hover: #fafbfc;
+
+  /* Alert colors */
+  --alert-info-bg: #d9edf7;
+  --alert-info-border: #bce8f1;
+  --alert-info-text: #31708f;
+
+  --alert-success-bg: #dff0d8;
+  --alert-success-border: #d6e9c6;
+  --alert-success-text: #3c763d;
+
+  --alert-warning-bg: #fcf8e3;
+  --alert-warning-border: #faebcc;
+  --alert-warning-text: #8a6d3b;
+
+  --alert-danger-bg: #f2dede;
+  --alert-danger-border: #ebccd1;
+  --alert-danger-text: #a94442;
+}
+
+/**
+ * Dark Mode Theme Variables
+ * Matching Readarr's dark theme
+ */
+.dark,
+[data-theme="dark"] {
+  /* Text colors */
+  --text-primary: #cccccc;
+  --text-secondary: #909293;
+  --text-disabled: #999999;
+  --text-inverse: #333333;
+
+  /* Background colors */
+  --bg-page: #202020;
+  --bg-card: #333333;
+  --bg-card-alt: #333333;
+  --bg-input: #333333;
+  --bg-input-readonly: #222222;
+  --bg-header: #2a2a2a;
+  --bg-sidebar: #2a2a2a;
+  --bg-toolbar: #262626;
+  --bg-modal: #2a2a2a;
+  --bg-modal-backdrop: rgba(0, 0, 0, 0.6);
+
+  /* Border colors */
+  --border-default: #858585;
+  --border-input: #dde6e9;
+  --border-focus: #66afe9;
+
+  /* Button colors */
+  --btn-default-bg: #333333;
+  --btn-default-border: #393f45;
+  --btn-default-hover: #444444;
+  --btn-default-text: #eeeeee;
+
+  --btn-primary-bg: #0b8750;
+  --btn-primary-border: #1d563d;
+  --btn-primary-hover: #097948;
+  --btn-primary-text: #ffffff;
+
+  --btn-success-bg: #27c24c;
+  --btn-success-hover: #24b145;
+  --btn-success-text: #ffffff;
+
+  --btn-warning-bg: #ff902b;
+  --btn-warning-hover: #ff8517;
+  --btn-warning-text: #ffffff;
+
+  --btn-danger-bg: #f05050;
+  --btn-danger-hover: #ee3d3d;
+  --btn-danger-text: #ffffff;
+
+  /* Link colors */
+  --link-default: #ffffff;
+  --link-hover: #ca302d;
+
+  /* Sidebar */
+  --sidebar-text: #e1e2e3;
+  --sidebar-bg: #2a2a2a;
+  --sidebar-active-bg: #333333;
+
+  /* Table */
+  --table-row-hover: rgba(255, 255, 255, 0.08);
+
+  /* Alert colors - dark mode adjusted */
+  --alert-info-bg: rgba(0, 0, 255, 0.1);
+  --alert-info-border: #31708f;
+  --alert-info-text: #cccccc;
+
+  --alert-success-bg: rgba(0, 255, 0, 0.1);
+  --alert-success-border: #3c763d;
+  --alert-success-text: #cccccc;
+
+  --alert-warning-bg: rgba(255, 255, 0, 0.1);
+  --alert-warning-border: #8a6d3b;
+  --alert-warning-text: #cccccc;
+
+  --alert-danger-bg: rgba(255, 0, 0, 0.1);
+  --alert-danger-border: #a94442;
+  --alert-danger-text: #cccccc;
+}
