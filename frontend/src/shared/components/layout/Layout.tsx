@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { Footer } from './Footer';
 import { Header } from './Header';
@@ -22,9 +23,9 @@ export function Layout({ children }: LayoutProps) {
       >
         <div className="contents lg:pointer-events-auto lg:block lg:w-72 lg:overflow-y-auto lg:border-r lg:border-zinc-900/10 lg:px-6 lg:pb-8 lg:pt-4 lg:dark:border-white/10 xl:w-80">
           <div className="hidden lg:flex">
-            <a href="/" aria-label="Home">
+            <Link to="/" aria-label="Home">
               <Logo className="h-8 w-8" />
-            </a>
+            </Link>
           </div>
           <Header mobileNavOpen={mobileNavOpen} setMobileNavOpen={setMobileNavOpen} />
           <Navigation className="hidden lg:mt-10 lg:block" />

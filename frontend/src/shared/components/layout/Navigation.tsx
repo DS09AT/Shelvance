@@ -1,6 +1,8 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
+import { useState, useEffect } from 'react';
+import { Play, Calendar, Clock, AlertTriangle, Settings, Laptop, ChevronDown, ChevronRight } from 'lucide-react';
 
 import { Button } from '@/shared/components/ui';
 import { remToPx } from '@/shared/lib/remToPx';
@@ -14,13 +16,23 @@ interface NavLink {
 
 interface NavGroup {
   title: string;
+  href?: string;
+  icon?: React.ElementType;
   links: NavLink[];
+}
+
+interface NavLinkProps {
+  href: string;
+  children: React.ReactNode;
+  onClick?: (e: React.MouseEvent) => void;
 }
 
 function getNavigation(): NavGroup[] {
   return [
     {
       title: translate('Library'),
+      href: '/',
+      icon: Play,
       links: [
         { title: translate('Authors'), href: '/authors' },
         { title: translate('Books'), href: '/books' },
@@ -31,12 +43,14 @@ function getNavigation(): NavGroup[] {
     },
     {
       title: translate('Calendar'),
-      links: [
-        { title: translate('Calendar'), href: '/calendar' },
-      ],
+      href: '/calendar',
+      icon: Calendar,
+      links: [],
     },
     {
       title: translate('Activity'),
+      href: '/activity/queue',
+      icon: Clock,
       links: [
         { title: translate('Queue'), href: '/activity/queue' },
         { title: translate('History'), href: '/activity/history' },
@@ -45,6 +59,8 @@ function getNavigation(): NavGroup[] {
     },
     {
       title: translate('Wanted'),
+      href: '/wanted/missing',
+      icon: AlertTriangle,
       links: [
         { title: translate('Missing'), href: '/wanted/missing' },
         { title: translate('CutoffUnmet'), href: '/wanted/cutoffunmet' },
@@ -52,6 +68,8 @@ function getNavigation(): NavGroup[] {
     },
     {
       title: translate('Settings'),
+      href: '/settings',
+      icon: Settings,
       links: [
         { title: translate('MediaManagement'), href: '/settings/mediamanagement' },
         { title: translate('Profiles'), href: '/settings/profiles' },
@@ -69,6 +87,8 @@ function getNavigation(): NavGroup[] {
     },
     {
       title: translate('System'),
+      href: '/system/status',
+      icon: Laptop,
       links: [
         { title: translate('Status'), href: '/system/status' },
         { title: translate('Tasks'), href: '/system/tasks' },
@@ -114,12 +134,6 @@ function VisibleSectionHighlight({ activeIndex }: { activeIndex: number }) {
   );
 }
 
-interface NavLinkProps {
-  href: string;
-  children: React.ReactNode;
-  onClick?: (e: React.MouseEvent) => void;
-}
-
 function NavLinkComponent({ href, children, onClick }: NavLinkProps) {
   const location = useLocation();
   const activeLink = location.pathname === href;
@@ -143,51 +157,112 @@ function NavLinkComponent({ href, children, onClick }: NavLinkProps) {
 
 function NavigationGroup({
   group,
+  isOpen,
+  onToggle,
 }: {
   group: NavGroup;
+  isOpen: boolean;
+  onToggle: () => void;
 }) {
   const location = useLocation();
-  const isActiveGroup = group.links.some((link) => link.href === location.pathname);
+  const navigate = useNavigate();
+  const hasLinks = group.links.length > 0;
   const activeIndex = group.links.findIndex((link) => link.href === location.pathname);
+  
+  const headerClasses = "flex items-center w-full text-left text-xs font-semibold text-zinc-900 transition hover:text-zinc-600 dark:text-white dark:hover:text-zinc-300 group-hover/header:translate-x-0.5";
+
+  const IconComponent = group.icon;
+
+  const handleHeaderClick = (e: React.MouseEvent) => {
+    if (group.href) {
+        e.preventDefault();
+        navigate(group.href);
+    }
+    if (hasLinks) {
+        onToggle();
+    }
+  };
 
   return (
     <li className="relative mt-6">
-      <motion.h2
-        layout="position"
-        className="text-xs font-semibold text-zinc-900 dark:text-white"
-      >
-        {group.title}
-      </motion.h2>
-      <div className="relative mt-3 pl-2">
-        <AnimatePresence initial={false}>
-          {isActiveGroup && <VisibleSectionHighlight activeIndex={activeIndex} />}
-        </AnimatePresence>
-        <motion.div
-          layout
-          className="absolute inset-y-0 left-2 w-px bg-zinc-900/10 dark:bg-white/5"
-        />
-        <AnimatePresence initial={false}>
-          {isActiveGroup && <ActivePageMarker activeIndex={activeIndex} />}
-        </AnimatePresence>
-        <ul role="list" className="border-l border-transparent">
-          {group.links.map((link) => (
-            <motion.li key={link.href} layout="position" className="relative">
-              <NavLinkComponent
-                href={link.href}
-                onClick={() => {}}
-              >
-                {link.title}
-              </NavLinkComponent>
-            </motion.li>
-          ))}
-        </ul>
+      <div className="group/header">
+        {group.href ? (
+          <a
+            href={group.href}
+            onClick={handleHeaderClick}
+            className={clsx(headerClasses, "py-1 cursor-pointer block")}
+          >
+            {IconComponent && <IconComponent className="h-4 w-4 mr-2 text-zinc-500 group-hover/header:text-zinc-700 dark:text-zinc-400 dark:group-hover/header:text-zinc-200 inline-block align-text-bottom" />}
+            {group.title}
+            {hasLinks && (isOpen ? <ChevronDown className="h-4 w-4 ml-auto text-zinc-400 inline-block" /> : <ChevronRight className="h-4 w-4 ml-auto text-zinc-400 inline-block" />)}
+          </a>
+        ) : (
+          <button 
+            onClick={onToggle}
+            className={clsx(headerClasses, "py-1")}
+          >
+            {IconComponent && <IconComponent className="h-4 w-4 mr-2 text-zinc-500 group-hover/header:text-zinc-700 dark:text-zinc-400 dark:group-hover/header:text-zinc-200 inline-block align-text-bottom" />}
+            {group.title}
+            {hasLinks && (isOpen ? <ChevronDown className="h-4 w-4 ml-auto text-zinc-400 inline-block" /> : <ChevronRight className="h-4 w-4 ml-auto text-zinc-400 inline-block" />)}
+          </button>
+        )}
       </div>
+
+      {hasLinks && (
+        <AnimatePresence initial={false}>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="overflow-hidden"
+            >
+              <div className="relative mt-3 pl-2">
+                <AnimatePresence initial={false}>
+                  {activeIndex !== -1 && <VisibleSectionHighlight activeIndex={activeIndex} />}
+                </AnimatePresence>
+                <motion.div
+                  layout
+                  className="absolute inset-y-0 left-2 w-px bg-zinc-900/10 dark:bg-white/5"
+                />
+                <AnimatePresence initial={false}>
+                  {activeIndex !== -1 && <ActivePageMarker activeIndex={activeIndex} />}
+                </AnimatePresence>
+                <ul role="list" className="border-l border-transparent">
+                  {group.links.map((link) => (
+                    <motion.li key={link.href} layout="position" className="relative">
+                      <NavLinkComponent
+                        href={link.href}
+                        onClick={() => {}}
+                      >
+                        {link.title}
+                      </NavLinkComponent>
+                    </motion.li>
+                  ))}
+                </ul>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      )}
     </li>
   );
 }
 
 export function Navigation({ className }: { className?: string }) {
   const navigation = getNavigation();
+  const location = useLocation();
+  const [openGroupTitle, setOpenGroupTitle] = useState<string | null>(null);
+
+  useEffect(() => {
+    const activeGroup = navigation.find(g => 
+      g.links.some(l => l.href === location.pathname) || g.href === location.pathname
+    );
+    
+    if (activeGroup) {
+      setOpenGroupTitle(activeGroup.title);
+    }
+  }, [location.pathname]);
 
   return (
     <nav className={className}>
@@ -196,6 +271,10 @@ export function Navigation({ className }: { className?: string }) {
           <NavigationGroup
             key={group.title}
             group={group}
+            isOpen={group.title === openGroupTitle || group.links.length === 0}
+            onToggle={() => {
+              setOpenGroupTitle(group.title === openGroupTitle ? null : group.title);
+            }}
           />
         ))}
         <li className="sticky bottom-0 z-10 mt-6 min-[416px]:hidden">
