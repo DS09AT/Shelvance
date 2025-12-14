@@ -35,8 +35,8 @@ namespace NzbDrone.Core.Test.UpdateTests
             {
                 _updatePackage = new UpdatePackage
                 {
-                    FileName = "Readarr.develop.0.6.2.883.tar.gz",
-                    Url = "https://github.com/readarr/Readarr/releases/download/v0.6.2.883/Readarr.develop.0.6.2.883.linux.tar.gz",
+                    FileName = "Shelvance.develop.0.6.2.883.tar.gz",
+                    Url = "https://github.com/DS09AT/Shelvance/releases/download/v0.6.2.883/Readarr.develop.0.6.2.883.linux.tar.gz",
                     Version = new Version("0.6.2.883")
                 };
             }
@@ -44,8 +44,8 @@ namespace NzbDrone.Core.Test.UpdateTests
             {
                 _updatePackage = new UpdatePackage
                 {
-                    FileName = "Readarr.develop.0.6.2.883.zip",
-                    Url = "https://github.com/readarr/Readarr/releases/download/v0.6.2.883/Readarr.develop.0.6.2.883.windows.zip",
+                    FileName = "Shelvance.develop.0.6.2.883.zip",
+                    Url = "https://github.com/DS09AT/Shelvance/releases/download/v0.6.2.883/Readarr.develop.0.6.2.883.windows.zip",
                     Version = new Version("0.6.2.883")
                 };
             }
@@ -69,7 +69,7 @@ namespace NzbDrone.Core.Test.UpdateTests
                   .Returns(true);
 
             Mocker.GetMock<IDiskProvider>()
-                  .Setup(v => v.FileExists(It.Is<string>(s => s.EndsWith("Readarr.Update".ProcessNameToExe()))))
+                  .Setup(v => v.FileExists(It.Is<string>(s => s.EndsWith("Shelvance.Update".ProcessNameToExe()))))
                   .Returns(true);
 
             _sandboxFolder = Mocker.GetMock<IAppFolderInfo>().Object.GetUpdateSandboxFolder();
@@ -154,7 +154,7 @@ namespace NzbDrone.Core.Test.UpdateTests
         public void should_return_with_warning_if_updater_doesnt_exists()
         {
             Mocker.GetMock<IDiskProvider>()
-                  .Setup(v => v.FileExists(It.Is<string>(s => s.EndsWith("Readarr.Update".ProcessNameToExe()))))
+                  .Setup(v => v.FileExists(It.Is<string>(s => s.EndsWith("Shelvance.Update".ProcessNameToExe()))))
                   .Returns(false);
 
             Subject.Execute(new ApplicationUpdateCommand());
@@ -262,7 +262,7 @@ namespace NzbDrone.Core.Test.UpdateTests
             updateSubFolder.Refresh();
 
             updateSubFolder.Exists.Should().BeTrue();
-            updateSubFolder.GetDirectories("Readarr").Should().HaveCount(1);
+            updateSubFolder.GetDirectories("Shelvance").Should().HaveCount(1);
             updateSubFolder.GetDirectories().Should().HaveCount(1);
             updateSubFolder.GetFiles().Should().NotBeEmpty();
         }
@@ -271,7 +271,7 @@ namespace NzbDrone.Core.Test.UpdateTests
         public void should_log_error_when_app_data_is_child_of_startup_folder()
         {
             Mocker.GetMock<IAppFolderInfo>().SetupGet(c => c.StartUpFolder).Returns(@"C:\Readarr".AsOsAgnostic);
-            Mocker.GetMock<IAppFolderInfo>().SetupGet(c => c.AppDataFolder).Returns(@"C:\Readarr\AppData".AsOsAgnostic);
+            Mocker.GetMock<IAppFolderInfo>().SetupGet(c => c.AppDataFolder).Returns(@"C:\Shelvance\AppData".AsOsAgnostic);
 
             Assert.Throws<CommandFailedException>(() => Subject.Execute(new ApplicationUpdateCommand()));
             ExceptionVerification.ExpectedErrors(1);

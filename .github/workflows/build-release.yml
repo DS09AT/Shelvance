@@ -27,7 +27,7 @@ env:
 
 jobs:
   build:
-    name: Build Readarr
+    name: Build Shelvance
     runs-on: ubuntu-latest
 
     if: |
@@ -141,78 +141,78 @@ jobs:
           cd _artifacts
 
           # Linux x64
-          tar -czf ../Readarr.v${{ steps.version.outputs.version }}.linux-x64.tar.gz -C linux-x64/net8.0 Readarr
+          tar -czf ../Shelvance.v${{ steps.version.outputs.version }}.linux-x64.tar.gz -C linux-x64/net8.0 Shelvance
 
           # Linux ARM64
-          tar -czf ../Readarr.v${{ steps.version.outputs.version }}.linux-arm64.tar.gz -C linux-arm64/net8.0 Readarr
+          tar -czf ../Shelvance.v${{ steps.version.outputs.version }}.linux-arm64.tar.gz -C linux-arm64/net8.0 Shelvance
 
           # Linux ARM
-          tar -czf ../Readarr.v${{ steps.version.outputs.version }}.linux-arm.tar.gz -C linux-arm/net8.0 Readarr
+          tar -czf ../Shelvance.v${{ steps.version.outputs.version }}.linux-arm.tar.gz -C linux-arm/net8.0 Shelvance
 
           # macOS x64
-          tar -czf ../Readarr.v${{ steps.version.outputs.version }}.osx-x64.tar.gz -C osx-x64/net8.0 Readarr
+          tar -czf ../Shelvance.v${{ steps.version.outputs.version }}.osx-x64.tar.gz -C osx-x64/net8.0 Shelvance
 
           # macOS ARM64
-          tar -czf ../Readarr.v${{ steps.version.outputs.version }}.osx-arm64.tar.gz -C osx-arm64/net8.0 Readarr
+          tar -czf ../Shelvance.v${{ steps.version.outputs.version }}.osx-arm64.tar.gz -C osx-arm64/net8.0 Shelvance
 
           # Windows x64
           cd win-x64/net8.0
-          zip -r ../../../Readarr.v${{ steps.version.outputs.version }}.windows-x64.zip Readarr
+          zip -r ../../../Shelvance.v${{ steps.version.outputs.version }}.windows-x64.zip Shelvance
           cd ../..
 
           # Windows x86
           cd win-x86/net8.0
-          zip -r ../../../Readarr.v${{ steps.version.outputs.version }}.windows-x86.zip Readarr
+          zip -r ../../../Shelvance.v${{ steps.version.outputs.version }}.windows-x86.zip Shelvance
 
           cd ../..
 
       - name: Upload Linux x64 artifact
         uses: actions/upload-artifact@v4
         with:
-          name: readarr-linux-x64
-          path: Readarr.v${{ steps.version.outputs.version }}.linux-x64.tar.gz
+          name: shelvance-linux-x64
+          path: Shelvance.v${{ steps.version.outputs.version }}.linux-x64.tar.gz
           retention-days: 30
 
       - name: Upload Linux ARM64 artifact
         uses: actions/upload-artifact@v4
         with:
-          name: readarr-linux-arm64
-          path: Readarr.v${{ steps.version.outputs.version }}.linux-arm64.tar.gz
+          name: shelvance-linux-arm64
+          path: Shelvance.v${{ steps.version.outputs.version }}.linux-arm64.tar.gz
           retention-days: 30
 
       - name: Upload Linux ARM artifact
         uses: actions/upload-artifact@v4
         with:
-          name: readarr-linux-arm
-          path: Readarr.v${{ steps.version.outputs.version }}.linux-arm.tar.gz
+          name: shelvance-linux-arm
+          path: Shelvance.v${{ steps.version.outputs.version }}.linux-arm.tar.gz
           retention-days: 30
 
       - name: Upload macOS x64 artifact
         uses: actions/upload-artifact@v4
         with:
-          name: readarr-osx-x64
-          path: Readarr.v${{ steps.version.outputs.version }}.osx-x64.tar.gz
+          name: shelvance-osx-x64
+          path: Shelvance.v${{ steps.version.outputs.version }}.osx-x64.tar.gz
           retention-days: 30
 
       - name: Upload macOS ARM64 artifact
         uses: actions/upload-artifact@v4
         with:
-          name: readarr-osx-arm64
-          path: Readarr.v${{ steps.version.outputs.version }}.osx-arm64.tar.gz
+          name: shelvance-osx-arm64
+          path: Shelvance.v${{ steps.version.outputs.version }}.osx-arm64.tar.gz
           retention-days: 30
 
       - name: Upload Windows x64 artifact
         uses: actions/upload-artifact@v4
         with:
-          name: readarr-windows-x64
-          path: Readarr.v${{ steps.version.outputs.version }}.windows-x64.zip
+          name: shelvance-windows-x64
+          path: Shelvance.v${{ steps.version.outputs.version }}.windows-x64.zip
           retention-days: 30
 
       - name: Upload Windows x86 artifact
         uses: actions/upload-artifact@v4
         with:
-          name: readarr-windows-x86
-          path: Readarr.v${{ steps.version.outputs.version }}.windows-x86.zip
+          name: shelvance-windows-x86
+          path: Shelvance.v${{ steps.version.outputs.version }}.windows-x86.zip
           retention-days: 30
 
       - name: Create or Update GitHub Release
@@ -222,13 +222,13 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            Readarr.v${{ steps.version.outputs.version }}.linux-x64.tar.gz
-            Readarr.v${{ steps.version.outputs.version }}.linux-arm64.tar.gz
-            Readarr.v${{ steps.version.outputs.version }}.linux-arm.tar.gz
-            Readarr.v${{ steps.version.outputs.version }}.osx-x64.tar.gz
-            Readarr.v${{ steps.version.outputs.version }}.osx-arm64.tar.gz
-            Readarr.v${{ steps.version.outputs.version }}.windows-x64.zip
-            Readarr.v${{ steps.version.outputs.version }}.windows-x86.zip
+            Shelvance.v${{ steps.version.outputs.version }}.linux-x64.tar.gz
+            Shelvance.v${{ steps.version.outputs.version }}.linux-arm64.tar.gz
+            Shelvance.v${{ steps.version.outputs.version }}.linux-arm.tar.gz
+            Shelvance.v${{ steps.version.outputs.version }}.osx-x64.tar.gz
+            Shelvance.v${{ steps.version.outputs.version }}.osx-arm64.tar.gz
+            Shelvance.v${{ steps.version.outputs.version }}.windows-x64.zip
+            Shelvance.v${{ steps.version.outputs.version }}.windows-x86.zip
           # On release event: Keep draft status, otherwise publish
           draft: ${{ github.event_name == 'release' && github.event.release.draft || false }}
           # On release event: Keep prerelease status, otherwise auto-detect

@@ -29,7 +29,7 @@ namespace NzbDrone.Core.Test.DecisionEngineTests
             _parsedBookInfo = Builder<ParsedBookInfo>.CreateNew()
                                                            .With(p => p.Quality = new QualityModel(Quality.FLAC,
                                                                new Revision(2, 0, false)))
-                                                           .With(p => p.ReleaseGroup = "Readarr")
+                                                           .With(p => p.ReleaseGroup = "Shelvance")
                                                            .Build();
 
             _books = Builder<Book>.CreateListOfSize(1)
@@ -87,7 +87,7 @@ namespace NzbDrone.Core.Test.DecisionEngineTests
 
             _trackFiles.Select(c =>
             {
-                c.ReleaseGroup = "Readarr";
+                c.ReleaseGroup = "Shelvance";
                 return c;
             }).ToList();
             _trackFiles.Select(c =>
@@ -114,7 +114,7 @@ namespace NzbDrone.Core.Test.DecisionEngineTests
 
             _trackFiles.Select(c =>
             {
-                c.ReleaseGroup = "Readarr";
+                c.ReleaseGroup = "Shelvance";
                 return c;
             }).ToList();
             _trackFiles.Select(c =>
@@ -141,7 +141,7 @@ namespace NzbDrone.Core.Test.DecisionEngineTests
 
             _trackFiles.Select(c =>
             {
-                c.ReleaseGroup = "Readarr";
+                c.ReleaseGroup = "Shelvance";
                 return c;
             }).ToList();
             _trackFiles.Select(c =>
@@ -225,7 +225,7 @@ namespace NzbDrone.Core.Test.DecisionEngineTests
 
             _trackFiles.Select(c =>
             {
-                c.ReleaseGroup = "Readarr";
+                c.ReleaseGroup = "Shelvance";
                 return c;
             }).ToList();
 
@@ -284,7 +284,7 @@ namespace NzbDrone.Core.Test.DecisionEngineTests
 
             _trackFiles.Select(c =>
             {
-                c.ReleaseGroup = "Readarr";
+                c.ReleaseGroup = "Shelvance";
                 return c;
             }).ToList();
 
@@ -313,7 +313,7 @@ namespace NzbDrone.Core.Test.DecisionEngineTests
 
             _trackFiles.Select(c =>
             {
-                c.ReleaseGroup = "Readarr";
+                c.ReleaseGroup = "Shelvance";
                 return c;
             }).ToList();
             _trackFiles.Select(c =>

@@ -129,10 +129,10 @@ namespace NzbDrone.Core.Datastore
 
                 if (OsInfo.IsOsx)
                 {
-                    throw new CorruptDatabaseException("Database file: {0} is corrupt, restore from backup if available. See: https://wiki.servarr.com/readarr/faq#i-use-readarr-on-a-mac-and-it-suddenly-stopped-working-what-happened", e, fileName);
+                    throw new CorruptDatabaseException("Database file: {0} is corrupt, restore from backup if available. See: https://shelvance.org/docs/faq#i-use-readarr-on-a-mac-and-it-suddenly-stopped-working-what-happened", e, fileName);
                 }
 
-                throw new CorruptDatabaseException("Database file: {0} is corrupt, restore from backup if available. See: https://wiki.servarr.com/readarr/faq#i-am-getting-an-error-database-disk-image-is-malformed", e, fileName);
+                throw new CorruptDatabaseException("Database file: {0} is corrupt, restore from backup if available. See: https://shelvance.org/docs/faq#i-am-getting-an-error-database-disk-image-is-malformed", e, fileName);
             }
             catch (NpgsqlException e)
             {

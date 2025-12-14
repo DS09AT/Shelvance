@@ -31,7 +31,7 @@ namespace NzbDrone.Core.Test.Download.DownloadClientTests.UTorrentTests
                 Port = 2222,
                 Username = "admin",
                 Password = "pass",
-                MusicCategory = "readarr"
+                MusicCategory = "shelvance"
             };
 
             _queued = new UTorrentTorrent
@@ -42,7 +42,7 @@ namespace NzbDrone.Core.Test.Download.DownloadClientTests.UTorrentTests
                 Size = 1000,
                 Remaining = 1000,
                 Progress = 0,
-                Label = "readarr",
+                Label = "shelvance",
                 DownloadUrl = _downloadUrl,
                 RootDownloadPath = "somepath"
             };
@@ -55,7 +55,7 @@ namespace NzbDrone.Core.Test.Download.DownloadClientTests.UTorrentTests
                 Size = 1000,
                 Remaining = 100,
                 Progress = 0.9,
-                Label = "readarr",
+                Label = "shelvance",
                 DownloadUrl = _downloadUrl,
                 RootDownloadPath = "somepath"
             };
@@ -68,7 +68,7 @@ namespace NzbDrone.Core.Test.Download.DownloadClientTests.UTorrentTests
                 Size = 1000,
                 Remaining = 100,
                 Progress = 0.9,
-                Label = "readarr",
+                Label = "shelvance",
                 DownloadUrl = _downloadUrl,
                 RootDownloadPath = "somepath"
             };
@@ -81,7 +81,7 @@ namespace NzbDrone.Core.Test.Download.DownloadClientTests.UTorrentTests
                 Size = 1000,
                 Remaining = 0,
                 Progress = 1.0,
-                Label = "readarr",
+                Label = "shelvance",
                 DownloadUrl = _downloadUrl,
                 RootDownloadPath = "somepath"
             };
@@ -108,7 +108,7 @@ namespace NzbDrone.Core.Test.Download.DownloadClientTests.UTorrentTests
         protected void GivenRedirectToTorrent()
         {
             var httpHeader = new HttpHeader();
-            httpHeader["Location"] = "http://test.readarr.com/not-a-real-torrent.torrent";
+            httpHeader["Location"] = "http://test.shelvance.org/not-a-real-torrent.torrent";
 
             Mocker.GetMock<IHttpClient>()
                   .Setup(s => s.Get(It.Is<HttpRequest>(h => h.Url.ToString() == _downloadUrl)))
