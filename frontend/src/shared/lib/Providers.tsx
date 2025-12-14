@@ -1,6 +1,10 @@
 import { useEffect } from 'react';
 import { ThemeProvider, useTheme } from 'next-themes';
 import { BrowserRouter } from 'react-router-dom';
+import { SignalRProvider } from './SignalRProvider';
+import { ToastProvider } from '@/shared/components/ui/Toast';
+import { SignalRToaster } from '@/features/system/components/SignalRToaster';
+import { StatusMessageProvider } from './StatusMessageProvider';
 
 function ThemeWatcher() {
   const { resolvedTheme, setTheme } = useTheme();
@@ -31,7 +35,14 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <ThemeProvider attribute="class" disableTransitionOnChange={true}>
       <ThemeWatcher />
       <BrowserRouter basename={window.Readarr?.urlBase}>
-        {children}
+        <ToastProvider>
+          <StatusMessageProvider>
+            <SignalRProvider>
+              <SignalRToaster />
+              {children}
+            </SignalRProvider>
+          </StatusMessageProvider>
+        </ToastProvider>
       </BrowserRouter>
     </ThemeProvider>
   );

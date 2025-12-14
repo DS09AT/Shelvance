@@ -12,6 +12,7 @@ src/**/[Oo]bj/
 *.sln.docstates
 .vs/
 .claude
+agents.md
 
 # Build results
 *_i.c
@@ -139,7 +140,6 @@ artifacts/
 bin
 obj
 output/*
-
 
 #OS X metadata files
 ._*

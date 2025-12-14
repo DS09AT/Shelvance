@@ -44,17 +44,20 @@ export function Tag({
   children,
   variant = 'medium',
   color = valueColorMap[children as string] ?? 'primary',
+  className,
 }: {
-  children: keyof typeof valueColorMap & (string | {});
+  children: React.ReactNode;
   variant?: keyof typeof variantStyles;
   color?: keyof typeof colorStyles;
+  className?: string;
 }) {
   return (
     <span
       className={clsx(
-        'font-mono text-[0.625rem]/6 font-semibold',
+        'font-mono text-[0.625rem]/6 font-semibold inline-flex items-center gap-1',
         variantStyles[variant],
         colorStyles[color][variant],
+        className
       )}
     >
       {children}

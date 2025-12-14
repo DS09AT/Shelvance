@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Loader2 } from 'lucide-react';
 
 const variantStyles = {
   primary:
@@ -16,7 +16,8 @@ const variantStyles = {
 type ButtonProps = {
   variant?: keyof typeof variantStyles;
   arrow?: 'left' | 'right';
-  href?: string;
+  isLoading?: boolean;
+  disabled?: boolean;
 } & (
   | (React.ComponentPropsWithoutRef<'button'> & { href?: never })
   | (React.ComponentPropsWithoutRef<'a'> & { href: string })
@@ -28,11 +29,16 @@ export function Button({
   children,
   arrow,
   href,
+  isLoading,
+  disabled = false,
   ...props
 }: ButtonProps) {
+  const isDisabled = isLoading || disabled;
+
   const combinedClassName = clsx(
-    'inline-flex gap-0.5 justify-center overflow-hidden text-sm font-medium transition',
+    'inline-flex gap-0.5 justify-center overflow-hidden text-sm font-medium transition items-center',
     variantStyles[variant],
+    isDisabled && 'opacity-70 cursor-not-allowed',
     className,
   );
 
@@ -49,6 +55,7 @@ export function Button({
 
   const content = (
     <>
+      {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
       {arrow === 'left' && arrowIcon}
       {children}
       {arrow === 'right' && arrowIcon}
@@ -64,7 +71,11 @@ export function Button({
   }
 
   return (
-    <button className={combinedClassName} {...(props as React.ComponentPropsWithoutRef<'button'>)}>
+    <button
+      className={combinedClassName}
+      disabled={isDisabled}
+      {...(props as React.ComponentPropsWithoutRef<'button'>)}
+    >
       {content}
     </button>
   );

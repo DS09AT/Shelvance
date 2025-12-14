@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { Layout } from '@/shared/components/layout';
 import { Heading } from '@/shared/components/ui';
 import { AuthorsPage } from '@/features/authors/AuthorsPage';
+import { AuthorDetailsPage } from '@/features/authors/AuthorDetailsPage';
 
 function Placeholder({ title }: { title: string }) {
   return (
@@ -25,7 +26,7 @@ export function App() {
         <Route path="/shelf" element={<Placeholder title="Bookshelf" />} />
         <Route path="/books" element={<Placeholder title="Books" />} />
         <Route path="/unmapped" element={<Placeholder title="Unmapped Files" />} />
-        <Route path="/author/:titleSlug" element={<Placeholder title="Author Details" />} />
+        <Route path="/author/:titleSlug" element={<AuthorDetailsPage />} />
         <Route path="/book/:titleSlug" element={<Placeholder title="Book Details" />} />
 
         {/* Calendar */}
