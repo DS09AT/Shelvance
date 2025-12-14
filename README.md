@@ -1,41 +1,58 @@
-# Shelvance Website
+# Shelvance Documentation Site
 
-Statische Website für das Shelvance-Projekt.
+Static website for the Shelvance project.
 
-## Struktur
+## Structure
 
 ```
 /
-├── index.html           # Hauptseite
+├── index.html              # Main landing page
+├── docs/                   # Documentation section
+│   └── index.html          # Installation guides and documentation
+├── api/                    # API reference section
+│   └── index.html          # API endpoint documentation
 ├── assets/
 │   ├── css/
-│   │   └── style.css   # Hauptstilsheet mit CSS-Variablen
+│   │   └── style.css       # Main stylesheet with CSS variables
 │   ├── js/
-│   │   └── main.js     # JavaScript-Funktionalitäten
-│   └── images/         # Bilder und Icons
-└── README.md           # Diese Datei
+│   │   └── main.js         # JavaScript functionality
+│   └── images/
+│       └── logo.png        # Shelvance logo
+└── README.md               # This file
 ```
 
-## Erweiterungen
+## Design
 
-Die Seite ist vorbereitet für:
-- **Zusätzliche Seiten**: Z.B. `/features.html`, `/pricing.html`, `/blog/`
-- **CSS-Modularisierung**: Separate Dateien pro Komponente möglich
-- **JavaScript-Module**: Z.B. Navigation, Scroll-Effekte, Formulare
-- **Assets**: Images, Icons, Fonts
-- **CMS-Integration**: HTML ist semantisch aufgebaut für einfache Integration
+- Dark mode interface with transparency effects
+- Gradient background
+- Responsive layout
+- CSS variables for consistent theming
 
-## CSS-Variablen
+## Technologies
 
-Alle Farben und Abstände sind zentral definiert und können leicht angepasst werden:
-- `--primary-color`: Hauptfarbe (Blau)
-- `--secondary-color`: Sekundärfarbe
-- `--accent-color`: Akzentfarbe
-- `--spacing-unit`: Basis-Spacing (1rem)
+- HTML5
+- CSS3
+- Vanilla JavaScript
+- Lucide icons
 
-## Responsive Design
+## Sections
 
-Die Website ist vollständig responsive und optimiert für:
-- Desktop (1200px+)
-- Tablet (768px - 1199px)
-- Mobile (unter 480px)
+### Landing Page (index.html)
+- Hero section with project description
+- Feature grid
+- Platform-specific download accordion
+- Open source information with links
+
+### Documentation (docs/index.html)
+Installation guides and configuration documentation.
+
+### API Reference (api/index.html)
+API endpoint and documentation pages.
+
+## Local Development
+
+No build process required. Open `index.html` directly in a browser or serve with any static file server.
+
+## License
+
+See main project for licensing information.
