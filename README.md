@@ -1,6 +1,12 @@
 # Shelvance
 
-E-book and audiobook library manager that organizes your collection and automates finding and downloading new releases.
+<p align="center">
+  <img src="https://raw.githubusercontent.com/DS09AT/Shelvance/main/Logo/256.png" alt="Shelvance Logo" width="200"/>
+</p>
+
+<p align="center">
+  <em>E-book and audiobook library manager that organizes your collection and automates finding and downloading new releases.</em>
+</p>
 
 ## About
 
