@@ -4,7 +4,7 @@
 
 **Please do not report security vulnerabilities through public GitHub issues.**
 
-If you discover a security vulnerability, please email: **[security@shelvance.com](mailto:security@shelvance.com)**
+If you discover a security vulnerability, please email: **[security@shelvance.org](mailto:security@shelvance.org)**
 
 Include:
 - Description of the vulnerability

@@ -75,7 +75,7 @@ Contributions welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## Security
 
-Security vulnerabilities should be reported via email to [security@shelvance.com](mailto:security@shelvance.com). See [SECURITY.md](SECURITY.md) for details.
+Security vulnerabilities should be reported via email to [security@shelvance.org](mailto:security@shelvance.org). See [SECURITY.md](SECURITY.md) for details.
 
 ## Support Development
 

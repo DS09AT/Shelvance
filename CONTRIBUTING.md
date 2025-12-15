@@ -24,7 +24,7 @@ All types of contributions are encouraged and valued. See the [Table of Contents
 
 ## Code of Conduct
 
-This project is governed by the [Shelvance Code of Conduct](https://github.com/DS09AT/Shelvance/blob/main/CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Report unacceptable behavior to [contact@shelvance.com](mailto:contact@shelvance.com).
+This project is governed by the [Shelvance Code of Conduct](https://github.com/DS09AT/Shelvance/blob/main/CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Report unacceptable behavior to [contact@shelvance.org](mailto:contact@shelvance.org).
 
 ## I Have a Question
 
@@ -79,7 +79,7 @@ GitHub's web interface will prompt you to sign off when creating commits through
 
 #### How Do I Submit a Good Bug Report?
 
-**Security Issues:** Never report security vulnerabilities publicly. Send them to [security@shelvance.com](mailto:security@shelvance.com).
+**Security Issues:** Never report security vulnerabilities publicly. Send them to [security@shelvance.org](mailto:security@shelvance.org).
 
 For other bugs, open an [Issue](https://github.com/DS09AT/Shelvance/issues/new) with:
 
